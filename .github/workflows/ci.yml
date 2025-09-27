@@ -22,15 +22,18 @@ jobs:
       - name: Build
         run: dotnet build ObligD2/Codigo/Backend/PharmaGo.sln --no-restore --configuration Release
 
-      - name: Run unit tests with coverage
-        run: dotnet test ObligD2/Codigo/Backend/PharnaGo.Test/PharmaGo.Test.csproj --no-build --configuration Release --collect:"XPlat Code Coverage"
+      - name: Run unit tests with coverage (excluyendo migraciones)
+        run: |
+          dotnet test ObligD2/Codigo/Backend/PharnaGo.Test/PharmaGo.Test.csproj --no-build --configuration Release --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByFile="**/Migrations/*"
+        working-directory: ObligD2/Codigo/Backend
 
-      - name: Report coverage
+      - name: Report coverage (solo backend, sin migraciones)
         uses: danielpalme/ReportGenerator-GitHub-Action@5.2.4
         with:
           reports: '**/coverage.cobertura.xml'
           targetdir: 'coverage-report'
           reporttypes: 'HtmlInline;Cobertura'
+          assemblyfilters: '+PharmaGo.*;-*.Migrations'
 
       - name: Upload coverage report artifact
         uses: actions/upload-artifact@v4
