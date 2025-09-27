@@ -40,7 +40,7 @@ namespace PharmaGo.Test.DataAccess.Test
             drug1 = new Drug { Deleted = false, Code = "XF324", Name = "Aspirina", Prescription = false, Price = 100, Stock = 50, Quantity = 10, UnitMeasure = unitMeasure1, Presentation = presentation1, Symptom = "afecciones bronquiales que cursan con tos y secreciones" };
             drug2 = new Drug { Deleted = false, Code = "RS546", Name = "Abrilar", Prescription = false, Price = 250, Stock = 50, Quantity = 20, UnitMeasure = unitMeasure2, Presentation = presentation2, Symptom = "acción analgésica, alivio de los dolores ocasionales leves o\r\nmoderados, como dolores de cabeza, musculares, de espalda.\r\nPresentación: comprimidos" };
 
-            purchaseDetail = new PurchaseDetail { Quantity = 2, Price = new decimal(100), Drug = drug1, Pharmacy = pharmacy };
+            purchaseDetail = new PurchaseDetail { Id = 1, Quantity = 2, Price = new decimal(100), Drug = drug1, Pharmacy = pharmacy };
             purchaseDetail_2 = new PurchaseDetail { Quantity = 1, Price = new decimal(250), Drug = drug2, Pharmacy = pharmacy_2 };
         }
 
