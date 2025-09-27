@@ -1,0 +1,47 @@
+name: Build, Test & Coverage
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore ObligD2/Codigo/Backend/PharmaGo.sln
+
+      - name: Build
+        run: dotnet build ObligD2/Codigo/Backend/PharmaGo.sln --no-restore --configuration Release
+
+      - name: Run unit tests with coverage
+        run: dotnet test ObligD2/Codigo/Backend/PharnaGo.Test/PharmaGo.Test.csproj --no-build --configuration Release --collect:"XPlat Code Coverage"
+
+      - name: Report coverage
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.2.4
+        with:
+          reports: '**/coverage.cobertura.xml'
+          targetdir: 'coverage-report'
+          reporttypes: 'HtmlInline;Cobertura'
+
+      - name: Upload coverage report artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: coverage-report
+
+      - name: Enforce minimum coverage
+        run: |
+          COVERAGE=$(grep -oP 'line-rate="\K[0-9.]+(?=")' coverage-report/Cobertura.xml | head -1)
+          echo "Coverage: $COVERAGE"
+          MIN_COVERAGE=0.90
+          awk -v c=$COVERAGE -v min=$MIN_COVERAGE 'BEGIN {exit (c<min)?1:0}'
+        shell: bash
