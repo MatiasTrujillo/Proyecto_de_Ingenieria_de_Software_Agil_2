@@ -11,18 +11,18 @@ namespace PharmaGo.Test.DataAccess.Test
     public class PurchasesDetailRepositoryTest
     {
 
-        private PurchasesDetailRepository _purchasesDetailRepository;
-        private Pharmacy pharmacy;
-        private Pharmacy pharmacy_2;
-        private PurchaseDetail purchaseDetail;
-        private PurchaseDetail purchaseDetail_2;
-        private Drug drug1;
-        private Drug drug2;
-        private UnitMeasure unitMeasure1;
-        private UnitMeasure unitMeasure2;
-        private Presentation presentation1;
-        private Presentation presentation2;
-        private PharmacyRepository pharmacyRepository;
+        private PurchasesDetailRepository _purchasesDetailRepository = null!;
+        private Pharmacy pharmacy = null!;
+        private Pharmacy pharmacy_2 = null!;
+        private PurchaseDetail purchaseDetail = null!;
+        private PurchaseDetail purchaseDetail_2 = null!;
+        private Drug drug1 = null!;
+        private Drug drug2 = null!;
+        private UnitMeasure unitMeasure1 = null!;
+        private UnitMeasure unitMeasure2 = null!;
+        private Presentation presentation1 = null!;
+        private Presentation presentation2 = null!;
+        private PharmacyRepository pharmacyRepository = null!;
         DbContextOptions<PharmacyGoDbContext> options = new DbContextOptionsBuilder<PharmacyGoDbContext>()
             .UseInMemoryDatabase(databaseName: "PharmaGoDb")
             .Options;
@@ -79,17 +79,22 @@ namespace PharmaGo.Test.DataAccess.Test
             using (var context = new PharmacyGoDbContext(options))
             {
                 _purchasesDetailRepository = new PurchasesDetailRepository(context);
+                
                 if (!_purchasesDetailRepository.Exists(purchaseDetail))
                 {
                     _purchasesDetailRepository.InsertOne(purchaseDetail);
                     _purchasesDetailRepository.Save();
                 }
 
-                //Act
-                var p_ = _purchasesDetailRepository.GetOneByExpression(p => p.Id == 1);
+                //Act - Buscar por propiedades básicas del PurchaseDetail
+                var p_ = _purchasesDetailRepository.GetOneByExpression(p => 
+                    p.Quantity == 2 && 
+                    p.Price == 100);
 
                 // Assert
-                Assert.IsNotNull(p_);
+                Assert.IsNotNull(p_, "No se encontró el PurchaseDetail con Quantity=2 y Price=100");
+                Assert.AreEqual(2, p_.Quantity);
+                Assert.AreEqual(100, p_.Price);
             }
         }
     }

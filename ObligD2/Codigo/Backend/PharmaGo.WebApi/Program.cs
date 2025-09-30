@@ -33,6 +33,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.MigrateDatabase();
+app.InitializeDatabaseData();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
