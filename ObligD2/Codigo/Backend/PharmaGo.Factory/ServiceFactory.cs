@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using PharmaGo.BusinessLogic;
 using PharmaGo.DataAccess;
 using PharmaGo.DataAccess.Repositories;
+using PharmaGo.DataAccess.Services;
 using PharmaGo.Domain.Entities;
 using PharmaGo.IBusinessLogic;
 using PharmaGo.IDataAccess;
@@ -57,6 +58,7 @@ namespace PharmaGo.Factory
                 )
             );
             serviceCollection.AddSingleton<ICustomMetrics, CustomMetrics>();
+            serviceCollection.AddScoped<DatabaseInitializationService>();
         }
 
         public static IHost MigrateDatabase(this IHost host)
@@ -70,6 +72,18 @@ namespace PharmaGo.Factory
             }
 
             return host; // allow fluent chaining if desired
+        }
+
+        public static IHost InitializeDatabaseData(this IHost host)
+        {
+            // Create a DI scope to get the initialization service
+            using (var scope = host.Services.CreateScope())
+            {
+                var initializationService = scope.ServiceProvider.GetRequiredService<DatabaseInitializationService>();
+                initializationService.Initialize();
+            }
+
+            return host;
         }
 
     }
