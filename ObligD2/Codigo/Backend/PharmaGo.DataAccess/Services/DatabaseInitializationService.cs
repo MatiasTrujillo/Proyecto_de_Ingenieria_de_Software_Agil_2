@@ -72,11 +72,6 @@ namespace PharmaGo.DataAccess.Services
 
                 _userRepository.InsertOne(defaultAdmin);
                 _userRepository.Save();
-
-                Console.WriteLine("Usuario administrador por defecto creado:");
-                Console.WriteLine($"Usuario: {defaultAdmin.UserName}");
-                Console.WriteLine($"Contraseña: {defaultAdmin.Password}");
-                Console.WriteLine("Por favor, cambie las credenciales por defecto después del primer login.");
             }
         }
     }
