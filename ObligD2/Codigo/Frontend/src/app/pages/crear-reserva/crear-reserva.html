@@ -1,0 +1,62 @@
+<p>a</p>
+
+<!--    
+<app-custom-toast></app-custom-toast>
+<div class="bg-light min-vh-100 d-flex flex-row align-items-center">
+  <c-container>
+    <c-row class="justify-content-center">
+      <c-col lg="7" md="9" xl="6">
+        <c-card class="mx-4">
+          <c-card-body class="p-4">
+            <form cForm [formGroup]="form" (ngSubmit)="goReserve()">
+              <h3>Crear Reserva</h3>
+              <p class="text-medium-emphasis">Seleccione medicamento y cantidad</p>
+
+              <c-input-group class="mb-3">
+                <span cInputGroupText>
+                  <svg cIcon name="cilPill"></svg>
+                </span>
+                <select cFormControl formControlName="medicamento" class="form-select">
+                  <option value="">-- Seleccione medicamento --</option>
+                  <option *ngFor="let m of medicamentos" [value]="m">{{ m }}</option>
+                </select>
+              </c-input-group>
+              <div *ngIf="form.controls['medicamento'].touched && form.controls['medicamento'].hasError('required')" class="text-danger mb-2">
+                Debe seleccionar un medicamento.
+              </div>
+
+              <c-input-group class="mb-3">
+                <span cInputGroupText>#</span>
+                <input
+                  type="number"
+                  min="1"
+                  cFormControl
+                  placeholder="Cantidad"
+                  formControlName="cantidad"
+                />
+              </c-input-group>
+              <div *ngIf="form.controls['cantidad'].touched && form.controls['cantidad'].hasError('required')" class="text-danger mb-2">
+                Debe ingresar una cantidad.
+              </div>
+              <div *ngIf="form.controls['cantidad'].touched && form.controls['cantidad'].hasError('min')" class="text-danger mb-2">
+                La cantidad debe ser mayor o igual a 1.
+              </div>
+
+              <div class="d-grid">
+                <button
+                  class="customButton"
+                  cButton
+                  color="primary"
+                  type="submit"
+                  [disabled]="form.invalid">
+                  Reservar
+                </button>
+              </div>
+            </form>
+          </c-card-body>
+        </c-card>
+      </c-col>
+    </c-row>
+  </c-container>
+</div>
+-->
