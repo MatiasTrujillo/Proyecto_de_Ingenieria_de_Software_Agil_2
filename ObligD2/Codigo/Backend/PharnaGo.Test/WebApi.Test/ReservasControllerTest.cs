@@ -44,11 +44,7 @@ namespace PharmaGo.Test.WebApi.Test
         [TestMethod]
         public void CrearReserva_WhenTodosLosParametrosSonValidos_ShouldCrearReserva()
         {
-            var reserva = new Reserva
-            {
-                NombreMedicamento = "Aspirina",
-                CantidadMedicamento = 2,
-            };
+            var reserva = new Reserva { NombreMedicamento = "Aspirina", CantidadMedicamento = 2 };
 
             _reservaManagerMock.Setup(service => service.CrearReserva(It.IsAny<Reserva>()))
                 .Verifiable();
