@@ -16,17 +16,17 @@ namespace PharmaGo.Test.WebApi.Test
     [TestClass]
     public class ReservasControllerTests
     {
-        private ReservasController _reservasController;
-        private Mock<IReservasManager> _reservasManagerMock;
+        private ReservaController _reservaController;
+        private Mock<IReservaManager> _reservaManagerMock;
 
         [TestInitialize]
         public void SetUp()
         {
 
-            _reservasManagerMock = new Mock<IReservasManager>(MockBehavior.Strict);
+            _reservaManagerMock = new Mock<IReservaManager>(MockBehavior.Strict);
             var httpContext = new DefaultHttpContext();
             httpContext.Request.Headers["Authorization"] = token;
-            _reservasController = new ReservasController(_reservasManagerMock.Object)
+            _reservaController = new ReservaController(_reservaManagerMock.Object)
             {
                 ControllerContext = new ControllerContext()
                 {
@@ -38,7 +38,7 @@ namespace PharmaGo.Test.WebApi.Test
         [TestCleanup]
         public void Cleanup()
         {
-            _reservasManagerMock.VerifyAll();
+            _reservaManagerMock.VerifyAll();
         }
 
         [TestMethod]
@@ -50,10 +50,10 @@ namespace PharmaGo.Test.WebApi.Test
                 CantidadMedicamento = 2,
             };
 
-            _reservasManagerMock.Setup(service => service.CrearReserva(It.IsAny<Reserva>()))
+            _reservaManagerMock.Setup(service => service.CrearReserva(It.IsAny<Reserva>()))
                 .Verifiable();
 
-            var result = _reservasController.CrearReserva(reserva) as CreatedResult;
+            var result = _reservaController.CrearReserva(reserva) as CreatedResult;
 
             Assert.IsNotNull(result);
             Assert.AreEqual(201, result.StatusCode);
