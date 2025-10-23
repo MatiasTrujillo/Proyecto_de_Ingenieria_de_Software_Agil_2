@@ -6,6 +6,7 @@ namespace PharmaGo.DataAccess
 {
     public class PharmacyGoDbContext : DbContext
     {
+        public DbSet<Reserva> Reservas { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Drug> Drugs { get; set; }
         public DbSet<Invitation> Invitations { get; set; }

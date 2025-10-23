@@ -37,7 +37,7 @@ namespace PharmaGo.Test.BusinessLogic.Test
         {
             var reserva = new Reserva { NombreMedicamento = "Aspirina", CantidadMedicamento = 2 };
 
-            _reservaManager.CrearReserva(reserva);
+            _reservaManager.Create(reserva);
 
             _reservaRepository.Verify(repo => repo.InsertOne(
                 It.Is<Reserva>(a =>

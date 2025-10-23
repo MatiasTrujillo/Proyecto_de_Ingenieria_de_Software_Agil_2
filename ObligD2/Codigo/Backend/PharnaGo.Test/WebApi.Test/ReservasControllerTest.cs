@@ -25,7 +25,6 @@ namespace PharmaGo.Test.WebApi.Test
 
             _reservaManagerMock = new Mock<IReservaManager>(MockBehavior.Strict);
             var httpContext = new DefaultHttpContext();
-            httpContext.Request.Headers["Authorization"] = token;
             _reservaController = new ReservaController(_reservaManagerMock.Object)
             {
                 ControllerContext = new ControllerContext()
@@ -45,14 +44,16 @@ namespace PharmaGo.Test.WebApi.Test
         public void CrearReserva_WhenTodosLosParametrosSonValidos_ShouldCrearReserva()
         {
             var reserva = new Reserva { NombreMedicamento = "Aspirina", CantidadMedicamento = 2 };
+            var reservaModel = new ReservaModel { NombreMedicamento = "Aspirina", CantidadMedicamento = 2 };
 
-            _reservaManagerMock.Setup(service => service.CrearReserva(It.IsAny<Reserva>()))
-                .Verifiable();
 
-            var result = _reservaController.CrearReserva(reserva) as CreatedResult;
+            _reservaManagerMock.Setup(x => x.Create(It.IsAny<Reserva>())).Returns(reserva);
+            var result = _reservaController.Create(reservaModel);
+            var objectResult = result as ObjectResult;
+            var statusCode = objectResult.StatusCode;
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(201, result.StatusCode);
+            _reservaManagerMock.VerifyAll();
+            Assert.AreEqual(201, statusCode);
         }
     }
 }
