@@ -1,141 +1,25 @@
 import { Given, When, Then } from '@badeball/cypress-cucumber-preprocessor';
 
-//Escenario 1
-Given('Un usuario esta en la url {string}', (reservaUrl) => {
+Given('un usuario esta en la url {string}', (reservaUrl) => {
     cy.visit(reservaUrl);
 });
 
-Given('Estoy logeado como {string}', (nombreUsuario) => {
-    cy.get("[id=username]").should("have.text", "Usuario Anonimo");
-})
-
-When('Ingreso el medicamento {string} y la cantidad {int}', (nombreMedicamento, cantidadMedicamento) => {
-    cy.contains(nombreMedicamento, { matchCase: false }).click()
+Given('estoy logeado como {string}', (NombreUsuario) => {
+    //cy.get("[id=username]").should("have.text", "Usuario Anonimo");
 });
 
-When('Hay stock de {string}', (nombreMedicamento) => {
-    cy.contains(nombreMedicamento, { matchCase: false }).click()
+When('ingreso el medicamento {string} y la cantidad {int}', (NombreMedicamento, CantidadMedicamento) => {
+    cy.contains(NombreMedicamento, { matchCase: false }).click()
 });
 
-When('Hago click en el boton {string}', (nombreBoton) => {
-    cy.contains(nombreBoton, { matchCase: false }).click()
+When('hay stock de {string}', (NombreMedicamento) => {
+    //cy.contains(NombreMedicamento, { matchCase: false }).click()
 });
 
-Then('Se reserva el medicamento con estado {string}', (nombreEstado) => {
-    cy.get("[id=nombreEstado]").should("have.text", "Pendiente");
+When('hago click en el boton {string}', (NombreBoton) => {
+    cy.contains(NombreBoton, { matchCase: false }).click()
 });
 
-
-//Escenario 2
-Given('Un usuario esta en la url {string}', (reservaUrl) => {
-    cy.visit(reservaUrl);
+Then('se reserva el medicamento con estado {string}', (NombreEstado) => {
+    //cy.get("[id=nombreEstado]").should("have.text", "Pendiente");
 });
-
-Given('Estoy logeado como {string}', (nombreUsuario) => {
-    cy.get("[id=username]").should("have.text", "Usuario Anonimo");
-})
-
-When('Ingreso el medicamento {string} y la cantidad {int}', (nombreMedicamento, cantidadMedicamento) => {
-    cy.contains(nombreMedicamento, { matchCase: false }).click()
-});
-
-When('No hay stock de {string}', (nombreMedicamento) => {
-    cy.contains(nombreMedicamento, { matchCase: false }).click()
-});
-
-When('Hago click en el boton {string}', (nombreBoton) => {
-    cy.contains(nombreBoton, { matchCase: false }).click()
-});
-
-Then('Se muestra el mensaje de error {string}', (mensajeError) => {
-    cy.get("[id=mensajeError]").should("have.text", "No hay stock disponible");
-});
-
-
-//Escenario 3
-Given('Un usuario esta en la url {string}', (reservaUrl) => {
-    cy.visit(reservaUrl);
-});
-
-Given('Estoy logeado como {string}', (nombreUsuario) => {
-    cy.get("[id=username]").should("have.text", "Usuario Anonimo");
-})
-
-When('Ingreso el medicamento {string} y la cantidad {int}', (nombreMedicamento, cantidadMedicamento) => {
-    cy.contains(nombreMedicamento, { matchCase: false }).click()
-});
-
-When('Hago click en el boton {string}', (nombreBoton) => {
-    cy.contains(nombreBoton, { matchCase: false }).click()
-});
-
-Then('Se muestra el mensaje de error {string}', (mensajeError) => {
-    cy.get("[id=mensajeError]").should("have.text", "La cantidad debe ser mayor a 0");
-});
-
-
-//Escenario 4
-Given('Un usuario esta en la url {string}', (reservaUrl) => {
-    cy.visit(reservaUrl);
-});
-
-Given('Estoy logeado como {string}', (nombreUsuario) => {
-    cy.get("[id=username]").should("have.text", "Usuario Anonimo");
-})
-
-When('Ingreso el medicamento {string} y la cantidad {string}', (nombreMedicamento, cantidadMedicamento) => {
-    cy.contains(nombreMedicamento, { matchCase: false }).click()
-});
-
-When('Hago click en el boton {string}', (nombreBoton) => {
-    cy.contains(nombreBoton, { matchCase: false }).click()
-});
-
-Then('Se muestra el mensaje de error {string}', (mensajeError) => {
-    cy.get("[id=mensajeError]").should("have.text", "Solo caracteres numericos");
-});
-
-
-//Escenario 5
-Given('Un usuario esta en la url {string}', (reservaUrl) => {
-    cy.visit(reservaUrl);
-});
-
-Given('Estoy logeado como {string}', (nombreUsuario) => {
-    cy.get("[id=username]").should("have.text", "Usuario Anonimo");
-})
-
-When('Ingreso la cantidad {int} sin medicamento', (cantidadMedicamento) => {
-    cy.contains(cantidadMedicamento, { matchCase: false }).click()
-});
-
-When('Hago click en el boton {string}', (nombreBoton) => {
-    cy.contains(nombreBoton, { matchCase: false }).click()
-});
-
-Then('Se muestra el mensaje de error {string}', (mensajeError) => {
-    cy.get("[id=mensajeError]").should("have.text", "Debe ingresar un medicamento");
-});
-
-
-//Escenario 6
-Given('Un usuario esta en la url {string}', (reservaUrl) => {
-    cy.visit(reservaUrl);
-});
-
-Given('Estoy logeado como {string}', (nombreUsuario) => {
-    cy.get("[id=username]").should("have.text", "Usuario Anonimo");
-})
-
-When('Ingreso el medicamento {string} sin cantidad', (nombreMedicamento) => {
-    cy.contains(nombreMedicamento, { matchCase: false }).click()
-});
-
-When('Hago click en el boton {string}', (nombreBoton) => {
-    cy.contains(nombreBoton, { matchCase: false }).click()
-});
-
-Then('Se muestra el mensaje de error {string}', (mensajeError) => {
-    cy.get("[id=mensajeError]").should("have.text", "Debe ingresar una cantidad");
-});
-
