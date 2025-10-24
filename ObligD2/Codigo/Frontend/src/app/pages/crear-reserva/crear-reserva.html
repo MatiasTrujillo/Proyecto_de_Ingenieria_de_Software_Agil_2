@@ -16,6 +16,7 @@
                 (input)="medicamento = $any($event.target).value"
                 placeholder="Nombre del medicamento"
                 autocomplete="off"
+                id="nombreMedicamento"
               />
               <div *ngIf="submitted && (!medicamento || medicamento.trim().length === 0)" class="text-danger mt-1">
                 Debe ingresar el nombre del medicamento.
@@ -31,6 +32,7 @@
                 [value]="cantidad"
                 (input)="cantidad = $any($event.target).valueAsNumber"
                 placeholder="Cantidad"
+                id="cantidadMedicamento"
               />
               <div *ngIf="submitted && (!cantidad || cantidad < 1)" class="text-danger mt-1">
                 La cantidad debe ser mayor o igual a 1.
@@ -38,7 +40,7 @@
             </div>
 
             <div class="d-grid">
-              <button class="btn btn-primary" type="submit">
+              <button class="btn btn-primary" type="submit" id="botonReservar">
                 Reservar
               </button>
             </div>

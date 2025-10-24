@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "node16",
+    "module": "Node16",
+    "types": ["cypress", "@badeball/cypress-cucumber-preprocessor"]
+  },
+  "include": [
+    "../node_modules/cypress",
+    "**/*.ts",
+    "**/*.js"
+  ]
+}

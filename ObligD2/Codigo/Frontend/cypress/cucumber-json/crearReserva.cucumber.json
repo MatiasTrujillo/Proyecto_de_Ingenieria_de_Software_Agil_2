@@ -22,7 +22,7 @@
             "name": "un usuario esta en la url \"http://localhost:4200/crear-reserva\"",
             "result": {
               "status": "undefined",
-              "duration": 123000000
+              "duration": 175000000
             }
           },
           {
