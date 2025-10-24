@@ -22,7 +22,6 @@ namespace PharmaGo.WebApi.Controllers
         }
 
         [HttpPost]
-        [AuthorizationFilter(new string[] { nameof(RoleType.Employee) })]
         public IActionResult Create([FromBody] ReservaModel reservaModel)
         {
             Reserva reservaCreated = _reservaManager.Create(reservaModel.ToEntity());

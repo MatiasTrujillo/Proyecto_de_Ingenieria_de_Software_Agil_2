@@ -1,66 +1,51 @@
-<p>a</p>
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3>Crear Reserva</h3>
+          <p class="text-muted">Ingrese medicamento y cantidad</p>
 
-
-
-
-
-<!--    
-<app-custom-toast></app-custom-toast>
-<div class="bg-light min-vh-100 d-flex flex-row align-items-center">
-  <c-container>
-    <c-row class="justify-content-center">
-      <c-col lg="7" md="9" xl="6">
-        <c-card class="mx-4">
-          <c-card-body class="p-4">
-            <form cForm [formGroup]="form" (ngSubmit)="goReserve()">
-              <h3>Crear Reserva</h3>
-              <p class="text-medium-emphasis">Seleccione medicamento y cantidad</p>
-
-              <c-input-group class="mb-3">
-                <span cInputGroupText>
-                  <svg cIcon name="cilPill"></svg>
-                </span>
-                <select cFormControl formControlName="medicamento" class="form-select">
-                  <option value="">-- Seleccione medicamento --</option>
-                  <option *ngFor="let m of medicamentos" [value]="m">{{ m }}</option>
-                </select>
-              </c-input-group>
-              <div *ngIf="form.controls['medicamento'].touched && form.controls['medicamento'].hasError('required')" class="text-danger mb-2">
-                Debe seleccionar un medicamento.
+          <form (submit)="goReserve(); $event.preventDefault()">
+            <div class="mb-3">
+              <label class="form-label">Medicamento</label>
+              <input
+                class="form-control"
+                type="text"
+                [value]="medicamento"
+                (input)="medicamento = $any($event.target).value"
+                placeholder="Nombre del medicamento"
+                autocomplete="off"
+              />
+              <div *ngIf="submitted && (!medicamento || medicamento.trim().length === 0)" class="text-danger mt-1">
+                Debe ingresar el nombre del medicamento.
               </div>
+            </div>
 
-              <c-input-group class="mb-3">
-                <span cInputGroupText>#</span>
-                <input
-                  type="number"
-                  min="1"
-                  cFormControl
-                  placeholder="Cantidad"
-                  formControlName="cantidad"
-                />
-              </c-input-group>
-              <div *ngIf="form.controls['cantidad'].touched && form.controls['cantidad'].hasError('required')" class="text-danger mb-2">
-                Debe ingresar una cantidad.
-              </div>
-              <div *ngIf="form.controls['cantidad'].touched && form.controls['cantidad'].hasError('min')" class="text-danger mb-2">
+            <div class="mb-3">
+              <label class="form-label">Cantidad</label>
+              <input
+                class="form-control"
+                type="number"
+                min="1"
+                [value]="cantidad"
+                (input)="cantidad = $any($event.target).valueAsNumber"
+                placeholder="Cantidad"
+              />
+              <div *ngIf="submitted && (!cantidad || cantidad < 1)" class="text-danger mt-1">
                 La cantidad debe ser mayor o igual a 1.
               </div>
+            </div>
 
-              <div class="d-grid">
-                <button
-                  class="customButton"
-                  cButton
-                  color="primary"
-                  type="submit"
-                  [disabled]="form.invalid">
-                  Reservar
-                </button>
-              </div>
-            </form>
-          </c-card-body>
-        </c-card>
-      </c-col>
-    </c-row>
-  </c-container>
+            <div class="d-grid">
+              <button class="btn btn-primary" type="submit">
+                Reservar
+              </button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
--->

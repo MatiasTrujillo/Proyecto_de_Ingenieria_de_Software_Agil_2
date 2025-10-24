@@ -20,6 +20,8 @@ namespace PharmaGo.DataAccess
         public DbSet<Presentation> Presentations { get; set; }
         public DbSet<Session> Sessions { get; set; }
 
+        public PharmacyGoDbContext() { }
+
         public PharmacyGoDbContext(DbContextOptions<PharmacyGoDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) {
