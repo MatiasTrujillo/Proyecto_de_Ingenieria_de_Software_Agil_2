@@ -161,8 +161,18 @@ Given('existe una reserva con fecha de expiración pasada', () => {
 });
 
 Then('la reserva se muestra con el estado {string}', (estado) => {
-  cy.wait('@getReservaExpirada', { timeout: 10000 });
-  cy.get('#tablaReservas tbody tr').first().should('contain', estado);
+  // Esperar a que la tabla esté visible
+  cy.get('#tablaReservas tbody tr', { timeout: 10000 }).should('be.visible');
+  // Esperar a que se renderice el badge específico
+  cy.wait(500);
+  
+  if (estado === 'Confirmada') {
+    cy.get('#tablaReservas tbody tr').first().find('.badge.bg-primary').should('be.visible').and('contain', estado);
+  } else if (estado === 'Expirada') {
+    cy.get('#tablaReservas tbody tr').first().find('.badge.bg-danger').should('be.visible').and('contain', estado);
+  } else {
+    cy.get('#tablaReservas tbody tr').first().should('contain', estado);
+  }
 });
 
 Then('el botón de cancelar está deshabilitado', () => {
@@ -216,3 +226,75 @@ Then('se muestra el usuario que la creó', () => {
 Then('se muestra el estado de la reserva', () => {
   cy.get('#tablaReservas tbody tr').first().find('td').eq(6).should('contain', 'Activa');
 });
+
+// Scenario: No se puede cancelar una reserva confirmada
+Given('existe una reserva confirmada', () => {
+  const reservaConfirmada = {
+    id: 1,
+    nombreMedicamento: 'Ibuprofeno',
+    cantidadMedicamento: 10,
+    fechaExpiracion: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    fechaReserva: new Date().toISOString(),
+    usuario: 'Usuario Test',
+    confirmada: true
+  };
+
+  cy.intercept('GET', '**/api/Reserva', {
+    statusCode: 200,
+    body: [reservaConfirmada]
+  }).as('getReservaConfirmada');
+  
+  cy.visit('http://localhost:4200/gestionar-reservas');
+});
+
+Then('el botón de cancelar está deshabilitado para esa reserva', () => {
+  cy.wait('@getReservaConfirmada', { timeout: 10000 });
+  cy.get('.btnCancelar').first().should('be.disabled');
+});
+
+// Scenario: Se puede cancelar una reserva no confirmada
+Given('existe una reserva no confirmada', () => {
+  const reservaNoConfirmada = {
+    id: 1,
+    nombreMedicamento: 'Paracetamol',
+    cantidadMedicamento: 5,
+    fechaExpiracion: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+    fechaReserva: new Date().toISOString(),
+    usuario: 'Usuario Test',
+    confirmada: false
+  };
+
+  cy.intercept('GET', '**/api/Reserva', {
+    statusCode: 200,
+    body: [reservaNoConfirmada]
+  }).as('getReservaNoConfirmada');
+  
+  cy.visit('http://localhost:4200/gestionar-reservas');
+});
+
+When('hace click en el botón {string} de esa reserva', (textoBoton) => {
+  cy.wait('@getReservaNoConfirmada', { timeout: 10000 });
+  cy.get('#tablaReservas').should('be.visible');
+  cy.get('.btnCancelar').should('have.length.at.least', 1);
+  
+  // Interceptar la llamada DELETE
+  cy.intercept('DELETE', '**/api/Reserva/1', {
+    statusCode: 200,
+    body: { message: 'Reserva cancelada exitosamente' }
+  }).as('deleteReservaNoConfirmada');
+
+  // Interceptar la recarga después del delete - lista vacía
+  cy.intercept('GET', '**/api/Reserva', {
+    statusCode: 200,
+    body: []
+  }).as('getReservasAfterDeleteNoConfirmada');
+
+  cy.get('.btnCancelar').first().click();
+});
+
+Then('la reserva es eliminada exitosamente', () => {
+  cy.wait('@deleteReservaNoConfirmada');
+  cy.wait('@getReservasAfterDeleteNoConfirmada');
+  cy.contains('No tienes reservas').should('be.visible');
+});
+

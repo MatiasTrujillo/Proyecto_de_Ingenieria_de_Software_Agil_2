@@ -47,6 +47,12 @@ namespace PharmaGo.BusinessLogic
         public void Delete(int id)
         {
             var reserva = GetById(id);
+            
+            if (!reserva.PuedeCancelarse())
+            {
+                throw new InvalidResourceException("No se puede cancelar una reserva confirmada.");
+            }
+            
             _reservaRepository.DeleteOne(reserva);
             _reservaRepository.Save();
         }

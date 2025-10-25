@@ -180,6 +180,31 @@ namespace PharmaGo.Test.WebApi.Test
         }
 
         [TestMethod]
+        [ExpectedException(typeof(InvalidResourceException))]
+        public void Delete_WhenReservaEstaConfirmada_ShouldThrowException()
+        {
+            _reservaManagerMock.Setup(x => x.Delete(1))
+                .Throws(new InvalidResourceException("No se puede cancelar una reserva confirmada."));
+            
+            _reservaController.Delete(1);
+        }
+
+        [TestMethod]
+        public void Delete_WhenReservaNOEstaConfirmada_ShouldEliminarReserva()
+        {
+            _reservaManagerMock.Setup(x => x.Delete(1));
+            
+            var result = _reservaController.Delete(1);
+            var okResult = result as OkObjectResult;
+
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+            Assert.IsNotNull(okResult.Value);
+            
+            _reservaManagerMock.Verify(x => x.Delete(1), Times.Once);
+        }
+
+        [TestMethod]
         public void Create_WhenReservaEsValida_ShouldRetornarReservaModelResponse()
         {
             var reserva = new Reserva 

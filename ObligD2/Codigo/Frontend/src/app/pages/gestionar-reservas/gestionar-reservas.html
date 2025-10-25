@@ -68,15 +68,16 @@
                   </td>
                   <td>{{ reserva.usuario }}</td>
                   <td>
-                    <span *ngIf="!isExpired(reserva.fechaExpiracion)" class="badge bg-success">Activa</span>
-                    <span *ngIf="isExpired(reserva.fechaExpiracion)" class="badge bg-danger">Expirada</span>
+                    <span *ngIf="reserva.confirmada === true" class="badge bg-primary">Confirmada</span>
+                    <span *ngIf="reserva.confirmada !== true && !isExpired(reserva.fechaExpiracion)" class="badge bg-success">Activa</span>
+                    <span *ngIf="reserva.confirmada !== true && isExpired(reserva.fechaExpiracion)" class="badge bg-danger">Expirada</span>
                   </td>
                   <td>
                     <button 
                       class="btn btn-sm btn-danger btnCancelar"
                       [attr.data-reserva-id]="reserva.id"
                       (click)="cancelarReserva(reserva.id, reserva.nombreMedicamento)"
-                      [disabled]="isExpired(reserva.fechaExpiracion)">
+                      [disabled]="isExpired(reserva.fechaExpiracion) || reserva.confirmada === true">
                       <i class="bi bi-trash"></i> Cancelar
                     </button>
                   </td>

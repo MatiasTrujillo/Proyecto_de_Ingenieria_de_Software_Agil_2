@@ -10,6 +10,7 @@ namespace PharmaGo.Domain.Entities
         public DateTime FechaExpiracion { get; set; }
         public DateTime FechaReserva { get; set; }
         public string Usuario { get; set; }
+        public bool Confirmada { get; set; } = false;
 
 
         public void ValidOrFail()
@@ -23,6 +24,11 @@ namespace PharmaGo.Domain.Entities
             {
                 throw new InvalidResourceException("La fecha de expiración debe ser futura.");
             }
+        }
+
+        public bool PuedeCancelarse()
+        {
+            return !Confirmada;
         }
     }
 }

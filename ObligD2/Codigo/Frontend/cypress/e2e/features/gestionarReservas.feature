@@ -58,3 +58,17 @@ Feature: Gestionar Reservas
     And se muestra la fecha de expiración
     And se muestra el usuario que la creó
     And se muestra el estado de la reserva
+
+  Scenario: No se puede cancelar una reserva confirmada
+    Given un usuario está en la página de gestionar reservas
+    And existe una reserva confirmada
+    When la página carga
+    Then la reserva se muestra con el estado "Confirmada"
+    And el botón de cancelar está deshabilitado para esa reserva
+
+  Scenario: Se puede cancelar una reserva no confirmada
+    Given un usuario está en la página de gestionar reservas
+    And existe una reserva no confirmada
+    When hace click en el botón "Cancelar" de esa reserva
+    And confirma la cancelación
+    Then la reserva es eliminada exitosamente

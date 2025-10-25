@@ -201,7 +201,8 @@ namespace PharmaGo.Test.BusinessLogic.Test
                 CantidadMedicamento = 2,
                 FechaExpiracion = DateTime.Now.AddDays(7),
                 FechaReserva = DateTime.Now,
-                Usuario = "TestUser"
+                Usuario = "TestUser",
+                Confirmada = false
             };
 
             _reservaRepository.Setup(r => r.GetOneByExpression(It.IsAny<Expression<Func<Reserva, bool>>>()))
@@ -214,6 +215,90 @@ namespace PharmaGo.Test.BusinessLogic.Test
             _reservaRepository.Verify(r => r.GetOneByExpression(It.IsAny<Expression<Func<Reserva, bool>>>()), Times.Once);
             _reservaRepository.Verify(r => r.DeleteOne(It.Is<Reserva>(res => res.Id == 1)), Times.Once);
             _reservaRepository.Verify(r => r.Save(), Times.Once);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidResourceException))]
+        public void Delete_WhenReservaEstaConfirmada_ShouldThrowException()
+        {
+            var reserva = new Reserva 
+            { 
+                Id = 1,
+                NombreMedicamento = "Aspirina", 
+                CantidadMedicamento = 2,
+                FechaExpiracion = DateTime.Now.AddDays(7),
+                FechaReserva = DateTime.Now,
+                Usuario = "TestUser",
+                Confirmada = true
+            };
+
+            _reservaRepository.Setup(r => r.GetOneByExpression(It.IsAny<Expression<Func<Reserva, bool>>>()))
+                .Returns(reserva);
+
+            _reservaManager.Delete(1);
+        }
+
+        [TestMethod]
+        public void Delete_WhenReservaNOEstaConfirmada_ShouldEliminarReserva()
+        {
+            var reserva = new Reserva 
+            { 
+                Id = 1,
+                NombreMedicamento = "Aspirina", 
+                CantidadMedicamento = 2,
+                FechaExpiracion = DateTime.Now.AddDays(7),
+                FechaReserva = DateTime.Now,
+                Usuario = "TestUser",
+                Confirmada = false
+            };
+
+            _reservaRepository.Setup(r => r.GetOneByExpression(It.IsAny<Expression<Func<Reserva, bool>>>()))
+                .Returns(reserva);
+            _reservaRepository.Setup(r => r.DeleteOne(It.IsAny<Reserva>()));
+            _reservaRepository.Setup(r => r.Save());
+
+            _reservaManager.Delete(1);
+
+            _reservaRepository.Verify(r => r.DeleteOne(It.Is<Reserva>(res => res.Id == 1 && res.Confirmada == false)), Times.Once);
+            _reservaRepository.Verify(r => r.Save(), Times.Once);
+        }
+
+        [TestMethod]
+        public void PuedeCancelarse_WhenReservaNOConfirmada_ShouldReturnTrue()
+        {
+            var reserva = new Reserva 
+            { 
+                Id = 1,
+                NombreMedicamento = "Aspirina", 
+                CantidadMedicamento = 2,
+                FechaExpiracion = DateTime.Now.AddDays(7),
+                FechaReserva = DateTime.Now,
+                Usuario = "TestUser",
+                Confirmada = false
+            };
+
+            var result = reserva.PuedeCancelarse();
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void PuedeCancelarse_WhenReservaConfirmada_ShouldReturnFalse()
+        {
+            var reserva = new Reserva 
+            { 
+                Id = 1,
+                NombreMedicamento = "Aspirina", 
+                CantidadMedicamento = 2,
+                FechaExpiracion = DateTime.Now.AddDays(7),
+                FechaReserva = DateTime.Now,
+                Usuario = "TestUser",
+                Confirmada = true
+            };
+
+            var result = reserva.PuedeCancelarse();
+
+            Assert.IsFalse(result);
         }
 
         [TestMethod]

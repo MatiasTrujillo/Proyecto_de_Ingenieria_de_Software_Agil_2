@@ -13,6 +13,7 @@ export interface Reserva {
   fechaExpiracion: string;
   fechaReserva: string;
   usuario: string;
+  confirmada?: boolean;
 }
 
 export interface ReservaRequest {
