@@ -31,6 +31,7 @@ namespace PharmaGo.Factory
             serviceCollection.AddScoped<IUnitMeasureManager, UnitMeasureManager>();
             serviceCollection.AddScoped<IExportManager, ExportManager>();
             serviceCollection.AddScoped<IRoleManager, RoleManager>();
+            serviceCollection.AddScoped<IReservaManager, ReservaManager>();
         }
 
         public static void RegisterDataAccessServices(this IServiceCollection serviceCollection, IConfiguration configuration)
@@ -47,6 +48,7 @@ namespace PharmaGo.Factory
             serviceCollection.AddScoped<IRepository<Drug>, DrugRepository>();
             serviceCollection.AddScoped<IRepository<PurchaseDetail>, PurchasesDetailRepository>();
             serviceCollection.AddScoped<IRepository<Role>, RoleRepository>();
+            serviceCollection.AddScoped<IRepository<Reserva>, ReservaRepository>();
 
             serviceCollection.AddDbContext<DbContext, PharmacyGoDbContext>(options =>
                 options.UseSqlServer(

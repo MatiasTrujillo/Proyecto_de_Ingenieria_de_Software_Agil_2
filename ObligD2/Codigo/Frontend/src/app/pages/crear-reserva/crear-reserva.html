@@ -1,0 +1,53 @@
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <h3>Crear Reserva</h3>
+          <p class="text-muted">Ingrese medicamento y cantidad</p>
+
+          <form (submit)="goReserve(); $event.preventDefault()">
+            <div class="mb-3">
+              <label class="form-label">Medicamento</label>
+              <input
+                class="form-control"
+                type="text"
+                [value]="medicamento"
+                (input)="medicamento = $any($event.target).value"
+                placeholder="Nombre del medicamento"
+                autocomplete="off"
+                id="nombreMedicamento"
+              />
+              <div *ngIf="submitted && (!medicamento || medicamento.trim().length === 0)" class="text-danger mt-1">
+                Debe ingresar el nombre del medicamento.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Cantidad</label>
+              <input
+                class="form-control"
+                type="number"
+                min="1"
+                [value]="cantidad"
+                (input)="cantidad = $any($event.target).valueAsNumber"
+                placeholder="Cantidad"
+                id="cantidadMedicamento"
+              />
+              <div *ngIf="submitted && (!cantidad || cantidad < 1)" class="text-danger mt-1">
+                La cantidad debe ser mayor o igual a 1.
+              </div>
+            </div>
+
+            <div class="d-grid">
+              <button class="btn btn-primary" type="submit" id="botonReservar">
+                Reservar
+              </button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

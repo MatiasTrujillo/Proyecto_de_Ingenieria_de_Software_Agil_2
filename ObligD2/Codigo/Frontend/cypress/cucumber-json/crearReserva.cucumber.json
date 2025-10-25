@@ -1,0 +1,77 @@
+[
+  {
+    "keyword": "Feature",
+    "name": "Crear Reserva",
+    "line": 1,
+    "id": "crear-reserva",
+    "tags": [],
+    "uri": "crearReserva.feature",
+    "elements": [
+      {
+        "id": "crear-reserva;reservar-exitosamente",
+        "keyword": "Scenario",
+        "line": 2,
+        "name": "Reservar exitosamente",
+        "tags": [],
+        "type": "scenario",
+        "steps": [
+          {
+            "arguments": [],
+            "keyword": "Given ",
+            "line": 3,
+            "name": "un usuario esta en la url \"http://localhost:4200/crear-reserva\"",
+            "result": {
+              "status": "undefined",
+              "duration": 175000000
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 4,
+            "name": "estoy logeado como \"Usuario Anonimo\"",
+            "result": {
+              "status": "skipped"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "When ",
+            "line": 5,
+            "name": "ingreso el medicamento \"Ibuprofeno\" y la cantidad \"10\"",
+            "result": {
+              "status": "skipped"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 6,
+            "name": "hay stock de \"Ibuprofeno\"",
+            "result": {
+              "status": "skipped"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "And ",
+            "line": 7,
+            "name": "hago click en el boton \"Reservar\"",
+            "result": {
+              "status": "skipped"
+            }
+          },
+          {
+            "arguments": [],
+            "keyword": "Then ",
+            "line": 8,
+            "name": "se reserva el medicamento con estado \"Pendiente\"",
+            "result": {
+              "status": "skipped"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -22,9 +22,15 @@ jobs:
       - name: Build
         run: dotnet build ObligD2/Codigo/Backend/PharmaGo.sln --no-restore --configuration Release
 
+      - name: Verify test project exists
+        run: |
+          echo "Verifying project structure..."
+          find . -name "PharmaGo.Test.csproj" -type f
+          ls -la ObligD2/Codigo/Backend/PharnaGo.Test/ || echo "Directory not found"
+
       - name: Run unit tests with coverage (excluyendo migraciones)
         run: |
-          dotnet test ObligD2/Codigo/Backend/PharnaGo.Test/PharmaGo.Test.csproj --no-build --configuration Release --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByFile="**/Migrations/*"
+          dotnet test PharnaGo.Test/PharmaGo.Test.csproj --configuration Release --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.ExcludeByFile="**/Migrations/*"
         working-directory: ObligD2/Codigo/Backend
 
       - name: Report coverage (solo backend, sin migraciones)

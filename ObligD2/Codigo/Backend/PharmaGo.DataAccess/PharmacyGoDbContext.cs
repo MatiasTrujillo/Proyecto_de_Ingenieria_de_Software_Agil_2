@@ -6,6 +6,7 @@ namespace PharmaGo.DataAccess
 {
     public class PharmacyGoDbContext : DbContext
     {
+        public DbSet<Reserva> Reservas { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Drug> Drugs { get; set; }
         public DbSet<Invitation> Invitations { get; set; }
@@ -18,6 +19,8 @@ namespace PharmaGo.DataAccess
         public DbSet<UnitMeasure> UnitMeasures { get; set; }
         public DbSet<Presentation> Presentations { get; set; }
         public DbSet<Session> Sessions { get; set; }
+
+        public PharmacyGoDbContext() { }
 
         public PharmacyGoDbContext(DbContextOptions<PharmacyGoDbContext> options) : base(options) { }
 
