@@ -310,5 +310,153 @@ namespace PharmaGo.Test.BusinessLogic.Test
 
             _reservaManager.Delete(999);
         }
+
+        // Tests para ConfirmarReserva
+
+        [TestMethod]
+        public void ConfirmarReserva_WhenRequierePrescripcionYTienePrescripcion_ShouldConfirmar()
+        {
+            var reserva = new Reserva 
+            { 
+                Id = 1,
+                NombreMedicamento = "Antibiótico", 
+                CantidadMedicamento = 1,
+                FechaExpiracion = DateTime.Now.AddDays(7),
+                FechaReserva = DateTime.Now,
+                Usuario = "TestUser",
+                RequierePrescripcion = true,
+                Confirmada = false
+            };
+
+            _reservaRepository.Setup(r => r.GetOneByExpression(It.IsAny<Expression<Func<Reserva, bool>>>()))
+                .Returns(reserva);
+            _reservaRepository.Setup(r => r.UpdateOne(It.IsAny<Reserva>()));
+            _reservaRepository.Setup(r => r.Save());
+
+            var result = _reservaManager.ConfirmarReserva(1, "EmpleadoTest", true);
+
+            Assert.IsTrue(result.Confirmada);
+            Assert.IsTrue(result.TienePrescripcion);
+            Assert.AreEqual("EmpleadoTest", result.EmpleadoConfirmacion);
+            Assert.IsNotNull(result.FechaConfirmacion);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidResourceException))]
+        public void ConfirmarReserva_WhenRequierePrescripcionYNoTienePrescripcion_ShouldThrowException()
+        {
+            var reserva = new Reserva 
+            { 
+                Id = 1,
+                NombreMedicamento = "Antibiótico", 
+                CantidadMedicamento = 1,
+                FechaExpiracion = DateTime.Now.AddDays(7),
+                FechaReserva = DateTime.Now,
+                Usuario = "TestUser",
+                RequierePrescripcion = true,
+                Confirmada = false
+            };
+
+            _reservaRepository.Setup(r => r.GetOneByExpression(It.IsAny<Expression<Func<Reserva, bool>>>()))
+                .Returns(reserva);
+
+            _reservaManager.ConfirmarReserva(1, "EmpleadoTest", false);
+        }
+
+        [TestMethod]
+        public void ConfirmarReserva_WhenNoRequierePrescripcion_ShouldConfirmarSinPrescripcion()
+        {
+            var reserva = new Reserva 
+            { 
+                Id = 1,
+                NombreMedicamento = "Paracetamol", 
+                CantidadMedicamento = 2,
+                FechaExpiracion = DateTime.Now.AddDays(7),
+                FechaReserva = DateTime.Now,
+                Usuario = "TestUser",
+                RequierePrescripcion = false,
+                Confirmada = false
+            };
+
+            _reservaRepository.Setup(r => r.GetOneByExpression(It.IsAny<Expression<Func<Reserva, bool>>>()))
+                .Returns(reserva);
+            _reservaRepository.Setup(r => r.UpdateOne(It.IsAny<Reserva>()));
+            _reservaRepository.Setup(r => r.Save());
+
+            var result = _reservaManager.ConfirmarReserva(1, "EmpleadoTest", false);
+
+            Assert.IsTrue(result.Confirmada);
+            Assert.IsFalse(result.TienePrescripcion);
+            Assert.AreEqual("EmpleadoTest", result.EmpleadoConfirmacion);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidResourceException))]
+        public void ConfirmarReserva_WhenYaEstaConfirmada_ShouldThrowException()
+        {
+            var reserva = new Reserva 
+            { 
+                Id = 1,
+                NombreMedicamento = "Paracetamol", 
+                CantidadMedicamento = 2,
+                FechaExpiracion = DateTime.Now.AddDays(7),
+                FechaReserva = DateTime.Now,
+                Usuario = "TestUser",
+                Confirmada = true
+            };
+
+            _reservaRepository.Setup(r => r.GetOneByExpression(It.IsAny<Expression<Func<Reserva, bool>>>()))
+                .Returns(reserva);
+
+            _reservaManager.ConfirmarReserva(1, "EmpleadoTest", false);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ResourceNotFoundException))]
+        public void ConfirmarReserva_WhenReservaNoExiste_ShouldThrowException()
+        {
+            _reservaRepository.Setup(r => r.GetOneByExpression(It.IsAny<Expression<Func<Reserva, bool>>>()))
+                .Returns((Reserva)null);
+
+            _reservaManager.ConfirmarReserva(999, "EmpleadoTest", false);
+        }
+
+        [TestMethod]
+        public void PuedeConfirmarse_WhenReservaNOConfirmada_ShouldReturnTrue()
+        {
+            var reserva = new Reserva 
+            { 
+                Id = 1,
+                NombreMedicamento = "Aspirina", 
+                CantidadMedicamento = 2,
+                FechaExpiracion = DateTime.Now.AddDays(7),
+                FechaReserva = DateTime.Now,
+                Usuario = "TestUser",
+                Confirmada = false
+            };
+
+            var result = reserva.PuedeConfirmarse();
+
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void PuedeConfirmarse_WhenReservaConfirmada_ShouldReturnFalse()
+        {
+            var reserva = new Reserva 
+            { 
+                Id = 1,
+                NombreMedicamento = "Aspirina", 
+                CantidadMedicamento = 2,
+                FechaExpiracion = DateTime.Now.AddDays(7),
+                FechaReserva = DateTime.Now,
+                Usuario = "TestUser",
+                Confirmada = true
+            };
+
+            var result = reserva.PuedeConfirmarse();
+
+            Assert.IsFalse(result);
+        }
     }
 }

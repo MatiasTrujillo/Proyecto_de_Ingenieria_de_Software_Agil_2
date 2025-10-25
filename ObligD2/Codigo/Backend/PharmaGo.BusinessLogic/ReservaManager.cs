@@ -56,5 +56,17 @@ namespace PharmaGo.BusinessLogic
             _reservaRepository.DeleteOne(reserva);
             _reservaRepository.Save();
         }
+
+        public Reserva ConfirmarReserva(int id, string empleado, bool tienePrescripcion)
+        {
+            var reserva = GetById(id);
+            
+            reserva.Confirmar(empleado, tienePrescripcion);
+            
+            _reservaRepository.UpdateOne(reserva);
+            _reservaRepository.Save();
+            
+            return reserva;
+        }
     }
 }

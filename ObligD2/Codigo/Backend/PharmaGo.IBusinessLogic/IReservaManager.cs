@@ -10,5 +10,6 @@ namespace PharmaGo.IBusinessLogic
         IEnumerable<Reserva> GetAll();
         Reserva GetById(int id);
         void Delete(int id);
+        Reserva ConfirmarReserva(int id, string empleado, bool tienePrescripcion);
     }
 }

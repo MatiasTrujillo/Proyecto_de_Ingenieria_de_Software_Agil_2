@@ -10,6 +10,11 @@ namespace PharmaGo.WebApi.Models.Out
         public DateTime FechaExpiracion { get; set; }
         public DateTime FechaReserva { get; set; }
         public string Usuario { get; set; }
+        public bool Confirmada { get; set; }
+        public bool RequierePrescripcion { get; set; }
+        public bool TienePrescripcion { get; set; }
+        public string EmpleadoConfirmacion { get; set; }
+        public DateTime? FechaConfirmacion { get; set; }
 
         public ReservaModelResponse(Reserva reserva)
         {
@@ -19,6 +24,11 @@ namespace PharmaGo.WebApi.Models.Out
             FechaExpiracion = reserva.FechaExpiracion;
             FechaReserva = reserva.FechaReserva;
             Usuario = reserva.Usuario;
+            Confirmada = reserva.Confirmada;
+            RequierePrescripcion = reserva.RequierePrescripcion;
+            TienePrescripcion = reserva.TienePrescripcion;
+            EmpleadoConfirmacion = reserva.EmpleadoConfirmacion;
+            FechaConfirmacion = reserva.FechaConfirmacion;
         }
     }
 }

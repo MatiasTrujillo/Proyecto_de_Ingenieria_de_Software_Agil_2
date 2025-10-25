@@ -51,5 +51,15 @@ namespace PharmaGo.WebApi.Controllers
             _reservaManager.Delete(id);
             return Ok(new { message = "Reserva cancelada exitosamente" });
         }
+
+        [HttpPatch("{id}/confirmar")]
+        [AuthorizationFilter(new string[] { nameof(RoleType.Employee) })]
+        public IActionResult ConfirmarReserva([FromRoute] int id, [FromBody] ConfirmarReservaModel model)
+        {
+            string empleado = HttpContext.Session.GetString("userName");
+            Reserva reserva = _reservaManager.ConfirmarReserva(id, empleado, model.TienePrescripcion);
+            ReservaModelResponse response = new ReservaModelResponse(reserva);
+            return Ok(response);
+        }
     }
 }

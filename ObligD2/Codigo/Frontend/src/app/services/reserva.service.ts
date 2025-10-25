@@ -14,6 +14,10 @@ export interface Reserva {
   fechaReserva: string;
   usuario: string;
   confirmada?: boolean;
+  requierePrescripcion?: boolean;
+  tienePrescripcion?: boolean;
+  empleadoConfirmacion?: string;
+  fechaConfirmacion?: string;
 }
 
 export interface ReservaRequest {
@@ -21,6 +25,11 @@ export interface ReservaRequest {
   cantidadMedicamento: number;
   fechaExpiracion: string;
   usuario: string;
+  requierePrescripcion?: boolean;
+}
+
+export interface ConfirmarReservaRequest {
+  tienePrescripcion: boolean;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -74,6 +83,15 @@ export class ReservaService {
       .pipe(
         tap(_ => console.log(`deleted reserva id=${id}`)),
         catchError(this.handleError<any>('deleteReserva'))
+      );
+  }
+
+  confirmarReserva(id: number, request: ConfirmarReservaRequest): Observable<Reserva> {
+    const url = `${this.url}/${id}/confirmar`;
+    return this.http.patch<Reserva>(url, request, { headers: this.getHttpHeaders() })
+      .pipe(
+        tap((reserva: Reserva) => console.log(`confirmed reserva id=${id}`)),
+        catchError(this.handleError<Reserva>('confirmarReserva'))
       );
   }
 

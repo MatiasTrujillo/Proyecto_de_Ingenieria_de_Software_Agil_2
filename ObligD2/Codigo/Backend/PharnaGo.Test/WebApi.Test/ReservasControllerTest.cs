@@ -237,5 +237,101 @@ namespace PharmaGo.Test.WebApi.Test
             Assert.AreEqual(2, reservaResponse.CantidadMedicamento);
             _reservaManagerMock.VerifyAll();
         }
+
+        // Tests para ConfirmarReserva
+
+        [TestMethod]
+        public void ConfirmarReserva_WhenRequierePrescripcionYTienePrescripcion_ShouldConfirmar()
+        {
+            var reserva = new Reserva 
+            { 
+                Id = 1,
+                NombreMedicamento = "Antibiótico", 
+                CantidadMedicamento = 1,
+                FechaExpiracion = DateTime.Now.AddDays(7),
+                FechaReserva = DateTime.Now,
+                Usuario = "TestUser",
+                RequierePrescripcion = true,
+                Confirmada = true,
+                TienePrescripcion = true,
+                EmpleadoConfirmacion = "EmpleadoTest",
+                FechaConfirmacion = DateTime.Now
+            };
+
+            var model = new ConfirmarReservaModel { TienePrescripcion = true };
+
+            var sessionMock = new Mock<ISession>();
+            sessionMock.Setup(s => s.TryGetValue("userName", out It.Ref<byte[]>.IsAny))
+                .Returns(true);
+            _reservaController.HttpContext.Session = sessionMock.Object;
+
+            _reservaManagerMock.Setup(x => x.ConfirmarReserva(1, It.IsAny<string>(), true))
+                .Returns(reserva);
+
+            var result = _reservaController.ConfirmarReserva(1, model);
+            var okResult = result as OkObjectResult;
+            var reservaResponse = okResult.Value as ReservaModelResponse;
+
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+            Assert.IsNotNull(reservaResponse);
+            Assert.IsTrue(reservaResponse.Confirmada);
+            Assert.IsTrue(reservaResponse.TienePrescripcion);
+        }
+
+        [TestMethod]
+        public void ConfirmarReserva_WhenNoRequierePrescripcion_ShouldConfirmarSinPrescripcion()
+        {
+            var reserva = new Reserva 
+            { 
+                Id = 1,
+                NombreMedicamento = "Paracetamol", 
+                CantidadMedicamento = 2,
+                FechaExpiracion = DateTime.Now.AddDays(7),
+                FechaReserva = DateTime.Now,
+                Usuario = "TestUser",
+                RequierePrescripcion = false,
+                Confirmada = true,
+                TienePrescripcion = false,
+                EmpleadoConfirmacion = "EmpleadoTest",
+                FechaConfirmacion = DateTime.Now
+            };
+
+            var model = new ConfirmarReservaModel { TienePrescripcion = false };
+
+            var sessionMock = new Mock<ISession>();
+            sessionMock.Setup(s => s.TryGetValue("userName", out It.Ref<byte[]>.IsAny))
+                .Returns(true);
+            _reservaController.HttpContext.Session = sessionMock.Object;
+
+            _reservaManagerMock.Setup(x => x.ConfirmarReserva(1, It.IsAny<string>(), false))
+                .Returns(reserva);
+
+            var result = _reservaController.ConfirmarReserva(1, model);
+            var okResult = result as OkObjectResult;
+            var reservaResponse = okResult.Value as ReservaModelResponse;
+
+            Assert.IsNotNull(okResult);
+            Assert.AreEqual(200, okResult.StatusCode);
+            Assert.IsNotNull(reservaResponse);
+            Assert.IsTrue(reservaResponse.Confirmada);
+            Assert.IsFalse(reservaResponse.TienePrescripcion);
+        }
+
+        [TestMethod]
+        public void ConfirmarReserva_WhenReservaNoExiste_ShouldReturn404()
+        {
+            var model = new ConfirmarReservaModel { TienePrescripcion = false };
+
+            var sessionMock = new Mock<ISession>();
+            sessionMock.Setup(s => s.TryGetValue("userName", out It.Ref<byte[]>.IsAny))
+                .Returns(true);
+            _reservaController.HttpContext.Session = sessionMock.Object;
+
+            _reservaManagerMock.Setup(x => x.ConfirmarReserva(999, It.IsAny<string>(), false))
+                .Throws(new ResourceNotFoundException("Reserva not found"));
+
+            Assert.ThrowsException<ResourceNotFoundException>(() => _reservaController.ConfirmarReserva(999, model));
+        }
     }
 }

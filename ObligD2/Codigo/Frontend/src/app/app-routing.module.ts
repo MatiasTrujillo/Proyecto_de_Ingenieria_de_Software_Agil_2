@@ -18,6 +18,7 @@ import { DeleteDrugComponent } from './pages/employee/delete-drug/delete-drug.co
 import { StockRequestComponent } from './pages/employee/stock-request/stock-request.component';
 import { CreateRequestComponent } from './pages/employee/create-request/create-request.component';
 import { ExportDrugsComponent } from './pages/employee/export-drugs/export-drugs.component';
+import { ConfirmarReservasComponent } from './pages/employee/confirmar-reservas/confirmar-reservas.component';
 import { AuthenticationGuard } from './guards/authentication.guard';
 import { Page401Component } from './pages/home/page401/page401.component';
 import { CreateInvitationComponent } from './pages/admin/create-invitation/create-invitation.component';
@@ -49,6 +50,7 @@ const routes: Routes = [
   { path: 'employee/stock-request', component: StockRequestComponent, canActivate: [AuthenticationGuard], data: {roles: ['Employee'] } },
   { path: 'employee/create-request', component: CreateRequestComponent, canActivate: [AuthenticationGuard], data: {roles: ['Employee'] } },
   { path: 'employee/export-drugs', component: ExportDrugsComponent, canActivate: [AuthenticationGuard], data: {roles: ['Employee'] } },
+  { path: 'employee/confirmar-reservas', component: ConfirmarReservasComponent, canActivate: [AuthenticationGuard], data: {roles: ['Employee'] } },
   { path: 'admin', component: AdminComponent, canActivate: [AuthenticationGuard], data: {roles: ['Administrator'] }},
   { path: 'admin/create-invitation', component: CreateInvitationComponent, canActivate: [AuthenticationGuard], data: {roles: ['Administrator'] }},
   { path: 'admin/list-invitation', component: ListInvitationComponent, canActivate: [AuthenticationGuard], data: {roles: ['Administrator'] }},

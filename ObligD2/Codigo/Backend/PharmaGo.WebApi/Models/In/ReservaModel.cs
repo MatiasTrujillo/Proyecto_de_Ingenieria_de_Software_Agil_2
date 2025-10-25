@@ -8,6 +8,7 @@ namespace PharmaGo.WebApi.Models.In
         public int CantidadMedicamento { get; set; }
         public DateTime FechaExpiracion { get; set; }
         public string Usuario { get; set; }
+        public bool RequierePrescripcion { get; set; }
 
         public Reserva ToEntity()
         {
@@ -17,7 +18,8 @@ namespace PharmaGo.WebApi.Models.In
                 CantidadMedicamento = this.CantidadMedicamento,
                 FechaExpiracion = this.FechaExpiracion,
                 FechaReserva = DateTime.Now,
-                Usuario = this.Usuario ?? "Anónimo"
+                Usuario = this.Usuario ?? "Anónimo",
+                RequierePrescripcion = this.RequierePrescripcion
             };
         }
     }
