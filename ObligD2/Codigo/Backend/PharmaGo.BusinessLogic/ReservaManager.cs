@@ -28,5 +28,45 @@ namespace PharmaGo.BusinessLogic
             _reservaRepository.Save();
             return reserva;
         }
+
+        public IEnumerable<Reserva> GetAll()
+        {
+            return _reservaRepository.GetAllByExpression(r => true);
+        }
+
+        public Reserva GetById(int id)
+        {
+            var reserva = _reservaRepository.GetOneByExpression(r => r.Id == id);
+            if (reserva == null)
+            {
+                throw new ResourceNotFoundException($"Reserva with id {id} not found.");
+            }
+            return reserva;
+        }
+
+        public void Delete(int id)
+        {
+            var reserva = GetById(id);
+            
+            if (!reserva.PuedeCancelarse())
+            {
+                throw new InvalidResourceException("No se puede cancelar una reserva confirmada.");
+            }
+            
+            _reservaRepository.DeleteOne(reserva);
+            _reservaRepository.Save();
+        }
+
+        public Reserva ConfirmarReserva(int id, string empleado, bool tienePrescripcion)
+        {
+            var reserva = GetById(id);
+            
+            reserva.Confirmar(empleado, tienePrescripcion);
+            
+            _reservaRepository.UpdateOne(reserva);
+            _reservaRepository.Save();
+            
+            return reserva;
+        }
     }
 }
