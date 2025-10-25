@@ -86,8 +86,8 @@ Then('la reserva es confirmada exitosamente', () => {
   cy.wait(500);
 });
 
-// NOTA: El step "se muestra el mensaje {string}" ya está definido en gestionarReservas.steps.js
-// y se reutiliza aquí (Cucumber permite compartir steps entre features)
+// NOTA: El step "se muestra el mensaje {string}" se reutiliza de gestionarReservas.steps.js
+// No redefinir aquí para evitar duplicados
 
 Then('la reserva desaparece de la lista de pendientes', () => {
   cy.wait('@getReservasAfterConfirm');

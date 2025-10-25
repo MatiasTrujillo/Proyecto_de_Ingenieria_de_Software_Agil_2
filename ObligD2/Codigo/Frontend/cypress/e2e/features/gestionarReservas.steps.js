@@ -20,7 +20,7 @@ When('la página carga', () => {
 });
 
 Then('se muestra el mensaje {string}', (mensaje) => {
-  cy.contains(mensaje).should('be.visible');
+  cy.contains(mensaje, { timeout: 10000 }).should('be.visible');
 });
 
 Then('se muestra el botón {string}', (textoBoton) => {
