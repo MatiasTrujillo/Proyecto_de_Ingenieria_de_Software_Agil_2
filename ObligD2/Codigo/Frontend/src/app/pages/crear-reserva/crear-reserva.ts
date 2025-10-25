@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import { CommonService } from '../../services/CommonService';
 
 
+
 @Component({
   selector: 'app-crear-reserva',
   templateUrl: './crear-reserva.html',
@@ -13,8 +14,10 @@ import { CommonService } from '../../services/CommonService';
 export class CrearReservaComponent implements OnInit {
   medicamento: string = '';
   cantidad: number = 1;
-  submitted: boolean = false;
   private RESERVA_API = environment.apiUrl + '/api/Reserva';
+  private MEDICAMENTO_API = environment.apiUrl + '/api/Drug';
+  medicamentos: string[] = [];
+  errorNombre = false;
 
   constructor(
     private http: HttpClient,
@@ -22,25 +25,30 @@ export class CrearReservaComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {}
-
-  validate(): { valid: boolean; message?: string } {
-    if (!this.medicamento || this.medicamento.trim().length === 0) {
-      return { valid: false, message: 'Debe ingresar el nombre del medicamento.' };
-    }
-    if (!Number.isFinite(this.cantidad) || this.cantidad < 1) {
-      return { valid: false, message: 'La cantidad debe ser mayor o igual a 1.' };
-    }
-    return { valid: true };
+  ngOnInit(): void {
+    this.loadMedicamentos();
   }
 
+  loadMedicamentos(): void {
+  this.http.get<any[]>(this.MEDICAMENTO_API).subscribe({
+    next: (res) => {
+      this.medicamentos = (res || []).map(item => item.name || 'Sin nombre');
+      console.log('Medicamentos cargados:', this.medicamentos);
+    },
+    error: (err) => {
+      console.error('Error cargando medicamentos', err);
+    }
+  });
+  }
+
+
+
   goReserve(): void {
-    this.submitted = true;
-    const v = this.validate();
-    if (!v.valid) {
-      this.commonService.updateToastData('Error', 'danger', v.message || 'Datos inválidos.');
+    if (this.medicamento.trim().length === 0) {
+      this.errorNombre = true;
       return;
     }
+    this.errorNombre = false;
 
     const payload = {
       NombreMedicamento: this.medicamento.trim(),
@@ -56,7 +64,6 @@ export class CrearReservaComponent implements OnInit {
         );
         this.medicamento = '';
         this.cantidad = 1;
-        this.submitted = false;
         this.router.navigate(['/']);
       },
       error: (err) => {
@@ -70,3 +77,4 @@ export class CrearReservaComponent implements OnInit {
     });
   }
 }
+

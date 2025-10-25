@@ -9,8 +9,8 @@ Given('estoy logeado como Usuario Anonimo', () => {
 });
 
 When('ingreso el medicamento {string} y la cantidad {string}', (NombreMedicamento, CantidadMedicamento) => {
+    cy.get('[id=nombreMedicamento]').select(NombreMedicamento);
     const cantidadMedicamento = parseInt(CantidadMedicamento, 10);
-    cy.get('[id=nombreMedicamento]').type(NombreMedicamento);
     cy.get('[id=cantidadMedicamento]').clear().type(cantidadMedicamento);
 });
 
@@ -26,8 +26,19 @@ Then('se reserva el medicamento', () => {
 });
 
 //Escenario 2
-Then('se muestra el mensaje de error {string}', () => {
+Then('se muestra un mensaje de error', () => {
     cy.get('#cantidadMedicamento')
   .invoke('prop', 'validationMessage')
   .should('contain', 'mayor o igual');
+});
+
+
+//Escenario 3
+When('ingreso la cantidad {string} sin medicamento', (CantidadMedicamento) => {
+    const cantidadMedicamento = parseInt(CantidadMedicamento, 10);
+    cy.get('[id=cantidadMedicamento]').clear().type(cantidadMedicamento);
+});
+
+Then('se muestra el mensaje de error {string}', (mensajeError) => {
+    cy.get("[id=errorNombre]").should("have.text", mensajeError);
 });

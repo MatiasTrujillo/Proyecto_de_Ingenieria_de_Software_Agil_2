@@ -9,18 +9,16 @@
           <form (submit)="goReserve(); $event.preventDefault()">
             <div class="mb-3">
               <label class="form-label">Medicamento</label>
-              <input
+              <select
                 class="form-control"
-                type="text"
                 [value]="medicamento"
-                (input)="medicamento = $any($event.target).value"
-                placeholder="Nombre del medicamento"
-                autocomplete="off"
+                (change)="medicamento = $any($event.target).value"
                 id="nombreMedicamento"
-              />
-              <div *ngIf="submitted && (!medicamento || medicamento.trim().length === 0)" class="text-danger mt-1">
-                Debe ingresar el nombre del medicamento.
-              </div>
+              >
+                <option value="" disabled [selected]="!medicamento">Seleccione medicamento</option>
+                <option *ngFor="let m of medicamentos" [value]="m">{{ m }}</option>
+              </select>
+              <div *ngIf="errorNombre" id="errorNombre">Por favor seleccione un medicamento</div>
             </div>
 
             <div class="mb-3">
@@ -48,3 +46,5 @@
     </div>
   </div>
 </div>
+
+
