@@ -74,7 +74,8 @@ When('el empleado hace click en {string}', (textoBoton) => {
     // Buscar y hacer click en el PRIMER botón "Con Prescripción"
     cy.get('button').contains('Con Prescripción').first().click();
   } else if (textoBoton === 'Confirmar sin Prescripción') {
-    // Buscar y hacer click en el PRIMER botón "Sin Prescripción"  
+    // Para el escenario 3, los intercepts ya están configurados en el Given
+    // Solo hacer click en el botón
     cy.get('button').contains('Sin Prescripción').first().click();
   }
 });
@@ -90,8 +91,15 @@ Then('la reserva es confirmada exitosamente', () => {
 // No redefinir aquí para evitar duplicados
 
 Then('la reserva desaparece de la lista de pendientes', () => {
-  cy.wait('@getReservasAfterConfirm');
-  // La tabla debería estar vacía o mostrar mensaje de no hay reservas
+  // Verificar que no hay reservas o que la tabla está vacía
+  cy.get('body').then(($body) => {
+    // Puede mostrar mensaje de "No hay reservas" o la tabla puede estar vacía
+    if ($body.find('table tbody tr').length > 0) {
+      cy.get('table tbody tr').should('have.length', 0);
+    } else {
+      cy.contains('No hay reservas pendientes').should('be.visible');
+    }
+  });
 });
 
 // Scenario: Empleado no confirma reserva al no haber prescripción del medicamento
@@ -118,11 +126,19 @@ Given('existe una reserva que no requiere prescripción', () => {
 
   const reservas = [reservaPendiente];
 
+  // Primer intercept: cuando la página carga, retorna la reserva
   cy.intercept('GET', '**/api/Reserva', {
     statusCode: 200,
     body: reservas
   }).as('getReservas');
+
+  cy.visit('http://localhost:4200/employee/confirmar-reservas');
+  cy.wait('@getReservas');
   
+  // Verificar que hay al menos una fila en la tabla
+  cy.get('table tbody tr').should('have.length.at.least', 1);
+  
+  // Ahora configurar los intercepts para después del click
   const reservaConfirmada = {
     ...reservaPendiente,
     confirmada: true,
@@ -136,14 +152,9 @@ Given('existe una reserva que no requiere prescripción', () => {
     body: reservaConfirmada
   }).as('confirmarReserva');
 
+  // Este intercept se ejecutará DESPUÉS del click
   cy.intercept('GET', '**/api/Reserva', {
     statusCode: 200,
     body: []
   }).as('getReservasAfterConfirm');
-
-  cy.visit('http://localhost:4200/employee/confirmar-reservas');
-  cy.wait('@getReservas');
-  
-  // Verificar que hay al menos una fila en la tabla
-  cy.get('table tbody tr').should('have.length.at.least', 1);
 });
