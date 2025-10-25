@@ -25,7 +25,31 @@ namespace PharmaGo.WebApi.Controllers
         public IActionResult Create([FromBody] ReservaModel reservaModel)
         {
             Reserva reservaCreated = _reservaManager.Create(reservaModel.ToEntity());
-            return Created(string.Empty, reservaCreated);
+            ReservaModelResponse response = new ReservaModelResponse(reservaCreated);
+            return Created(string.Empty, response);
+        }
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            IEnumerable<Reserva> reservas = _reservaManager.GetAll();
+            IEnumerable<ReservaModelResponse> response = reservas.Select(r => new ReservaModelResponse(r));
+            return Ok(response);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetById([FromRoute] int id)
+        {
+            Reserva reserva = _reservaManager.GetById(id);
+            ReservaModelResponse response = new ReservaModelResponse(reserva);
+            return Ok(response);
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete([FromRoute] int id)
+        {
+            _reservaManager.Delete(id);
+            return Ok(new { message = "Reserva cancelada exitosamente" });
         }
     }
 }

@@ -7,5 +7,8 @@ namespace PharmaGo.IBusinessLogic
     public interface IReservaManager
     {
         Reserva Create(Reserva reserva);
+        IEnumerable<Reserva> GetAll();
+        Reserva GetById(int id);
+        void Delete(int id);
     }
 }
