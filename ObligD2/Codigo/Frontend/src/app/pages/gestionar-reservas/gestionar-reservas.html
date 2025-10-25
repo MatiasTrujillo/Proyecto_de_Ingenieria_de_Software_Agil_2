@@ -1,0 +1,99 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Gestionar Reservas</h2>
+        <div>
+          <button class="btn btn-primary me-2" id="btnCrearReserva" (click)="goToCrearReserva()">
+            <i class="bi bi-plus-circle"></i> Nueva Reserva
+          </button>
+          <button class="btn btn-secondary" id="btnVolver" (click)="goToHome()">
+            <i class="bi bi-arrow-left"></i> Volver
+          </button>
+        </div>
+      </div>
+
+      <!-- Loading state -->
+      <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+        <p class="mt-3">Cargando reservas...</p>
+      </div>
+
+      <!-- Error state -->
+      <div *ngIf="error && !loading" class="alert alert-danger" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i> {{ error }}
+      </div>
+
+      <!-- Empty state -->
+      <div *ngIf="!loading && !error && reservas.length === 0" class="text-center py-5">
+        <i class="bi bi-inbox" style="font-size: 4rem; color: #ccc;"></i>
+        <h4 class="mt-3">No tienes reservas</h4>
+        <p class="text-muted">Cuando realices una reserva, aparecerá aquí.</p>
+        <button class="btn btn-primary" (click)="goToCrearReserva()">Crear primera reserva</button>
+      </div>
+
+      <!-- Reservas list -->
+      <div *ngIf="!loading && !error && reservas.length > 0" class="row">
+        <div class="col-12">
+          <div class="table-responsive">
+            <table class="table table-hover" id="tablaReservas">
+              <thead class="table-light">
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Medicamento</th>
+                  <th scope="col">Cantidad</th>
+                  <th scope="col">Fecha Reserva</th>
+                  <th scope="col">Fecha Expiración</th>
+                  <th scope="col">Usuario</th>
+                  <th scope="col">Estado</th>
+                  <th scope="col">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let reserva of reservas" 
+                    [class.table-warning]="isExpired(reserva.fechaExpiracion)"
+                    [attr.data-reserva-id]="reserva.id">
+                  <td>{{ reserva.id }}</td>
+                  <td><strong>{{ reserva.nombreMedicamento }}</strong></td>
+                  <td>
+                    <span class="badge bg-info">{{ reserva.cantidadMedicamento }} unidades</span>
+                  </td>
+                  <td>{{ formatDate(reserva.fechaReserva) }}</td>
+                  <td>
+                    <span [class.text-danger]="isExpired(reserva.fechaExpiracion)">
+                      {{ formatDate(reserva.fechaExpiracion) }}
+                    </span>
+                  </td>
+                  <td>{{ reserva.usuario }}</td>
+                  <td>
+                    <span *ngIf="!isExpired(reserva.fechaExpiracion)" class="badge bg-success">Activa</span>
+                    <span *ngIf="isExpired(reserva.fechaExpiracion)" class="badge bg-danger">Expirada</span>
+                  </td>
+                  <td>
+                    <button 
+                      class="btn btn-sm btn-danger btnCancelar"
+                      [attr.data-reserva-id]="reserva.id"
+                      (click)="cancelarReserva(reserva.id, reserva.nombreMedicamento)"
+                      [disabled]="isExpired(reserva.fechaExpiracion)">
+                      <i class="bi bi-trash"></i> Cancelar
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div *ngIf="!loading && !error && reservas.length > 0" class="alert alert-info mt-3">
+        <strong>Total de reservas:</strong> {{ reservas.length }}
+        <span class="ms-3">
+          <strong>Activas:</strong> {{ getReservasActivas() }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
