@@ -16,13 +16,15 @@ namespace PharmaGo.Test.BusinessLogic.Test
     {
         private Mock<IRepository<Reserva>> _reservaRepository;
         private ReservaManager _reservaManager;
+        private Mock<IRepository<Drug>> _drugRepository;
 
 
         [TestInitialize]
         public void InitTest()
         {
             _reservaRepository = new Mock<IRepository<Reserva>>();
-            _reservaManager = new ReservaManager(_reservaRepository.Object);
+            _drugRepository = new Mock<IRepository<Drug>>();
+            _reservaManager = new ReservaManager(_reservaRepository.Object, _drugRepository.Object);
 
         }
 
@@ -457,6 +459,22 @@ namespace PharmaGo.Test.BusinessLogic.Test
             var result = reserva.PuedeConfirmarse();
 
             Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void CheckStock_WhenDrugExistsAndHasStock_ShouldReturnTrue()
+        {
+            string nombre = "Aspirina";
+            int cantidad = 5;
+            var drug = new Drug { Name = nombre, Stock = 10 };
+
+            _drugRepository.Setup(repo => repo.GetOneByExpression(
+                It.Is<Expression<Func<Drug, bool>>>(expr => expr.Compile()(drug))
+            )).Returns(drug);
+
+            bool result = _reservaManager.CheckStock(nombre, cantidad);
+
+            Assert.IsTrue(result);
         }
     }
 }

@@ -7,6 +7,9 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { CommonModule } from '@angular/common';
+import { CrearReservaComponent } from './pages/crear-reserva/crear-reserva';
+
 // DatePicker
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
@@ -124,7 +127,7 @@ import { ConfirmarReservasComponent } from './pages/employee/confirmar-reservas/
     GestionarReservasComponent,
     ConfirmarReservasComponent,
     
-
+    CrearReservaComponent
   ],
   imports: [
     BrowserModule,
@@ -156,6 +159,7 @@ import { ConfirmarReservasComponent } from './pages/employee/confirmar-reservas/
     QRCodeModule,
     // DatePicker
     BsDatepickerModule,
+    CommonModule
   ],
   providers: [IconSetService, StorageManager, CommonService],
   bootstrap: [AppComponent]

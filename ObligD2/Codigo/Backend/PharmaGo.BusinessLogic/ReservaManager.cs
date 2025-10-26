@@ -10,10 +10,12 @@ namespace PharmaGo.BusinessLogic
     public class ReservaManager : IReservaManager
     {
         private readonly IRepository<Reserva> _reservaRepository;
+        private readonly IRepository<Drug> _drugRepository;
 
-        public ReservaManager(IRepository<Reserva> reservaRepository)
+        public ReservaManager(IRepository<Reserva> reservaRepository, IRepository<Drug> drugRepository)
         {
             _reservaRepository = reservaRepository;
+            _drugRepository = drugRepository;
         }
 
         public Reserva Create(Reserva reserva)
@@ -29,6 +31,16 @@ namespace PharmaGo.BusinessLogic
             return reserva;
         }
 
+        public bool CheckStock(string nombre, int cantidad)
+        {
+            var drug = _drugRepository.GetOneByExpression(d => d.Name == nombre);
+            if (drug == null)
+            {
+                return false;
+            }
+            return drug.Stock >= cantidad;
+        }
+        
         public IEnumerable<Reserva> GetAll()
         {
             return _reservaRepository.GetAllByExpression(r => true);

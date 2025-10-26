@@ -61,5 +61,12 @@ namespace PharmaGo.WebApi.Controllers
             ReservaModelResponse response = new ReservaModelResponse(reserva);
             return Ok(response);
         }
-    }
+
+        [HttpGet]
+        public ActionResult<bool> CheckStock([FromQuery] string nombre, [FromQuery] int cantidad)
+        {
+            bool hayStock = _reservaManager.CheckStock(nombre, cantidad);
+            return Ok(hayStock);
+        }
+}
 }
