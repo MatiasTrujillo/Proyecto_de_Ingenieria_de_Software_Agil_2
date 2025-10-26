@@ -18,10 +18,17 @@ When('hay stock', () => {
 });
 
 When('hago click en el boton {string}', (NombreBoton) => {
+    // Interceptar la llamada POST a la API
+    cy.intercept('POST', '**/api/Reserva', {
+        statusCode: 200,
+        body: { message: 'Reserva creada exitosamente' }
+    }).as('crearReserva');
+    
     cy.get("[id=botonReservar]").should("have.text", NombreBoton).click();
 });
 
 Then('se reserva el medicamento', () => {
+    cy.wait('@crearReserva');
     cy.url().should('include', '/home');
 });
 

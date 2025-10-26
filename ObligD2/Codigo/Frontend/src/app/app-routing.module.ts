@@ -18,6 +18,7 @@ import { DeleteDrugComponent } from './pages/employee/delete-drug/delete-drug.co
 import { StockRequestComponent } from './pages/employee/stock-request/stock-request.component';
 import { CreateRequestComponent } from './pages/employee/create-request/create-request.component';
 import { ExportDrugsComponent } from './pages/employee/export-drugs/export-drugs.component';
+import { ConfirmarReservasComponent } from './pages/employee/confirmar-reservas/confirmar-reservas.component';
 import { AuthenticationGuard } from './guards/authentication.guard';
 import { Page401Component } from './pages/home/page401/page401.component';
 import { CreateInvitationComponent } from './pages/admin/create-invitation/create-invitation.component';
@@ -29,6 +30,7 @@ import { InvitationComponent } from './pages/owner/invitation/invitation.compone
 import { CreatePharmacyComponent } from './pages/admin/create-pharmacy/create-pharmacy.component';
 import { StockRequestOwnerComponent } from './pages/owner/stock-request-owner/stock-request-owner.component';
 import { CrearReservaComponent } from './pages/crear-reserva/crear-reserva';
+import { GestionarReservasComponent } from './pages/gestionar-reservas/gestionar-reservas';
 
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -38,6 +40,7 @@ const routes: Routes = [
   { path: 'home/detail/:id', component: DetailComponent },
   { path: 'home/tracking', component: TrackingComponent },
   { path: 'crear-reserva', component: CrearReservaComponent },
+  { path: 'gestionar-reservas', component: GestionarReservasComponent },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'employee', component: EmployeeComponent, canActivate: [AuthenticationGuard], data: {roles: ['Employee'] }},
@@ -47,6 +50,7 @@ const routes: Routes = [
   { path: 'employee/stock-request', component: StockRequestComponent, canActivate: [AuthenticationGuard], data: {roles: ['Employee'] } },
   { path: 'employee/create-request', component: CreateRequestComponent, canActivate: [AuthenticationGuard], data: {roles: ['Employee'] } },
   { path: 'employee/export-drugs', component: ExportDrugsComponent, canActivate: [AuthenticationGuard], data: {roles: ['Employee'] } },
+  { path: 'employee/confirmar-reservas', component: ConfirmarReservasComponent, canActivate: [AuthenticationGuard], data: {roles: ['Employee'] } },
   { path: 'admin', component: AdminComponent, canActivate: [AuthenticationGuard], data: {roles: ['Administrator'] }},
   { path: 'admin/create-invitation', component: CreateInvitationComponent, canActivate: [AuthenticationGuard], data: {roles: ['Administrator'] }},
   { path: 'admin/list-invitation', component: ListInvitationComponent, canActivate: [AuthenticationGuard], data: {roles: ['Administrator'] }},

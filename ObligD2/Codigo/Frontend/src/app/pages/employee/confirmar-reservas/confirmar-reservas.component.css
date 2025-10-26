@@ -1,0 +1,17 @@
+.table-responsive {
+  margin-top: 20px;
+}
+
+.badge {
+  font-size: 0.875rem;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+}

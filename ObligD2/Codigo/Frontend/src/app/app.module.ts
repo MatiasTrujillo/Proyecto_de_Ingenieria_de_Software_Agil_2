@@ -80,6 +80,9 @@ import { PurchaseByDateComponent } from './pages/owner/purchase-by-date/purchase
 // Owner
 import { InvitationComponent } from './pages/owner/invitation/invitation.component';
 import { StockRequestOwnerComponent } from './pages/owner/stock-request-owner/stock-request-owner.component';
+import { CrearReservaComponent } from './pages/crear-reserva/crear-reserva';
+import { GestionarReservasComponent } from './pages/gestionar-reservas/gestionar-reservas';
+import { ConfirmarReservasComponent } from './pages/employee/confirmar-reservas/confirmar-reservas.component';
 
 @NgModule({
   declarations: [
@@ -119,6 +122,10 @@ import { StockRequestOwnerComponent } from './pages/owner/stock-request-owner/st
     PurchaseByDateComponent,
     InvitationComponent,
     StockRequestOwnerComponent,
+    // Reservas
+    CrearReservaComponent,
+    GestionarReservasComponent,
+    ConfirmarReservasComponent,
     
     CrearReservaComponent
   ],
