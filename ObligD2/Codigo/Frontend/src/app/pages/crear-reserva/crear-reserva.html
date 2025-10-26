@@ -32,6 +32,7 @@
                 placeholder="Cantidad"
                 id="cantidadMedicamento"
               />
+              <div *ngIf="errorCantidad" id="errorCantidad">Debe ingresar una cantidad</div>
             </div>
 
             <div class="d-grid">

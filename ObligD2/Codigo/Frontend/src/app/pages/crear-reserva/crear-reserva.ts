@@ -21,6 +21,7 @@ export class CrearReservaComponent implements OnInit {
   medicamentos: string[] = [];
   errorNombre = false;
   errorStock = false;
+  errorCantidad = false;
 
   constructor(
     private http: HttpClient,
@@ -53,6 +54,10 @@ export class CrearReservaComponent implements OnInit {
       this.errorNombre = true;
       return;
     }
+    if (!Number.isFinite(this.cantidad)) {
+      this.errorCantidad = true;
+      return;
+    }
 
     this.http.get<boolean>(this.RESERVA_API,  { params: { nombre: this.medicamento, cantidad: this.cantidad } }).subscribe({
       next: (res) => {
@@ -65,6 +70,7 @@ export class CrearReservaComponent implements OnInit {
 
         this.errorNombre = false;
         this.errorStock = false;
+        this.errorCantidad = false;
 
         this.http.post<any>(this.RESERVA_API, payload).subscribe({
           next: () => {

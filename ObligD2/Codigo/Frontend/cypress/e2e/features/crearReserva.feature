@@ -29,4 +29,10 @@ Feature: Crear Reserva
         And hago click en el boton " Reservar "
         Then se muestra el mensaje de error de "No hay stock disponible"
 
+    Scenario: Reservar sin ingresar cantidad
+        Given un usuario esta en la url "http://localhost:4200/crear-reserva"
+        And estoy logeado como Usuario Anonimo
+        When ingreso el medicamento "Droga1" sin cantidad
+        And hago click en el boton " Reservar "
+        Then se muestra un mensaje de error "Debe ingresar una cantidad"
     
