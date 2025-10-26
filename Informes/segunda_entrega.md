@@ -1,4 +1,4 @@
-# Informe primera entrega
+# Informe segunda entrega
 - Iván Casales: 257790
 - Francisco Gandioli: 290071
 - Matías Trujillo: 272561
