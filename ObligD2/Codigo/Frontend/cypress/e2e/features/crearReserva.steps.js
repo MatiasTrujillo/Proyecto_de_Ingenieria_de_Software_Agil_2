@@ -46,10 +46,13 @@ Then('se muestra el mensaje de error {string}', (mensajeError) => {
 
 //Escenario 4
 
-When('No hay stock de {string}', (nombreMedicamento) => {
-    cy.contains(nombreMedicamento, { matchCase: false }).click()
+When('no hay stock de {string}', (nombreMedicamento) => {
+    cy.intercept('GET', `/api/Reserva?nombre=${nombreMedicamento}*`, {
+        statusCode: 200,
+        body: false,
+    }).as('CheckStock');
 });
 
-Then('Se muestra el mensaje de error {string}', (mensajeError) => {
-    cy.get("[id=errorStock]").should("have.text", "No hay stock disponible");
+Then('se muestra el mensaje de error de {string}', (mensajeError) => {
+    cy.get("[id=errorStock]").should("have.text", mensajeError);
 });

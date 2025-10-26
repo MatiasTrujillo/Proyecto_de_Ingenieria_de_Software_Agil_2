@@ -54,39 +54,39 @@ export class CrearReservaComponent implements OnInit {
       return;
     }
 
-    /*this.http.get<boolean>(this.RESERVA_API,  { params: { nombre: this.medicamento, cantidad: String(this.cantidad) } }).subscribe({
+    this.http.get<boolean>(this.RESERVA_API,  { params: { nombre: this.medicamento, cantidad: this.cantidad } }).subscribe({
       next: (res) => {
-        this.stock = res || false;
-      }
-    });
-    if(this.stock){
-      this.errorStock = true;
-      return;
-    }*/
+        this.stock = res;
 
-    this.errorNombre = false;
-    this.errorStock = false;
+        if(!this.stock){
+          this.errorStock = true;
+          return;
+        }
 
-    this.http.post<any>(this.RESERVA_API, payload).subscribe({
-      next: () => {
-        this.commonService.updateToastData(
-          'Reserva creada',
-          'success',
-          'La reserva se ha creado correctamente.'
-        );
-        this.medicamento = '';
-        this.cantidad = 1;
-        this.router.navigate(['/']);
-      },
-      error: (err) => {
-        console.error('Error creando reserva', err);
-        this.commonService.updateToastData(
-          'Error',
-          'danger',
-          'No fue posible crear la reserva.'
-        );
+        this.errorNombre = false;
+        this.errorStock = false;
+
+        this.http.post<any>(this.RESERVA_API, payload).subscribe({
+          next: () => {
+            this.commonService.updateToastData(
+              'Reserva creada',
+              'success',
+              'La reserva se ha creado correctamente.'
+            );
+            this.medicamento = '';
+            this.cantidad = 1;
+            this.router.navigate(['/']);
+          },
+          error: (err) => {
+            console.error('Error creando reserva', err);
+            this.commonService.updateToastData(
+              'Error',
+              'danger',
+              'No fue posible crear la reserva.'
+            );
+          }
+        });
       }
     });
   }
 }
-
