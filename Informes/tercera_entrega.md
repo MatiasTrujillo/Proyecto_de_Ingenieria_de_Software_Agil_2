@@ -131,10 +131,7 @@
 2. El escenario 2 de *Crear reserva* puede fallar si el idioma del entorno no es español.  
 3. Las pruebas Cypress de creación de reserva requieren una droga llamada **"Droga1"** con stock **200**.  
 
-**Prompts relevantes usados:**  
-> “Quiero crear una página parecida a register en crear-reserva. Quiero que el usuario pueda ingresar el nombre y la cantidad del medicamento, y al presionar un botón se cree la reserva conectando con el endpoint del backend.”  
->  
-> “Cuando corro Cypress, me da el error: Step implementation missing for: un usuario está en la url 'http://localhost:4200/crear-reserva'.”
+
 
 ## Diagramas de Secuencia y Componentes
 
