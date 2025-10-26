@@ -55,5 +55,21 @@ namespace PharmaGo.Test.WebApi.Test
             _reservaManagerMock.VerifyAll();
             Assert.AreEqual(201, statusCode);
         }
+
+        [TestMethod]
+        public void Available_WhenHayStock_ShouldReturnTrue()
+        {
+            string nombre = "Aspirina";
+            int cantidad = 2;
+
+            _reservaManagerMock.Setup(x => x.CheckStock(nombre, cantidad)).Returns(true);
+
+            var result = _reservaController.CheckStock(nombre, cantidad);
+            var okResult = result.Result as OkObjectResult;
+            var hayStock = (bool)okResult.Value;
+
+            _reservaManagerMock.VerifyAll();
+            Assert.IsTrue(hayStock);
+        }
     }
 }

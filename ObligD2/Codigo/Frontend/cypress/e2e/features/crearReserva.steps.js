@@ -42,3 +42,14 @@ When('ingreso la cantidad {string} sin medicamento', (CantidadMedicamento) => {
 Then('se muestra el mensaje de error {string}', (mensajeError) => {
     cy.get("[id=errorNombre]").should("have.text", mensajeError);
 });
+
+
+//Escenario 4
+
+When('No hay stock de {string}', (nombreMedicamento) => {
+    cy.contains(nombreMedicamento, { matchCase: false }).click()
+});
+
+Then('Se muestra el mensaje de error {string}', (mensajeError) => {
+    cy.get("[id=errorStock]").should("have.text", "No hay stock disponible");
+});

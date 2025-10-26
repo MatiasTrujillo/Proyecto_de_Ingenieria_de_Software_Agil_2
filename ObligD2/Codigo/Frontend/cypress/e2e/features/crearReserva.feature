@@ -20,4 +20,13 @@ Feature: Crear Reserva
         When ingreso la cantidad "10" sin medicamento
         And hago click en el boton " Reservar "
         Then se muestra el mensaje de error "Por favor seleccione un medicamento"
+
+    Scenario: Intentar reservar sin stock
+        Given Un usuario esta en la url "http://localhost:4200/reservarMediamento"
+        And estoy logeado como "Usaurio Anonimo"
+        When ingreso el medicamento "Ibuprofeno" y la cantidad "100"
+        And no hay stock de "Ibuprofeno"
+        And hago click en el boton "Reservar"
+        Then se muestra el mensaje de error "No hay stock disponible"
+
     

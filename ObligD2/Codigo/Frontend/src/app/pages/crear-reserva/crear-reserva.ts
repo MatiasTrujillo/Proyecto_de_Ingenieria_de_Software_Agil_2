@@ -14,10 +14,13 @@ import { CommonService } from '../../services/CommonService';
 export class CrearReservaComponent implements OnInit {
   medicamento: string = '';
   cantidad: number = 1;
+  stock: boolean = false;
   private RESERVA_API = environment.apiUrl + '/api/Reserva';
   private MEDICAMENTO_API = environment.apiUrl + '/api/Drug';
+  medicamentosObj: any[] = [];
   medicamentos: string[] = [];
   errorNombre = false;
+  errorStock = false;
 
   constructor(
     private http: HttpClient,
@@ -32,11 +35,8 @@ export class CrearReservaComponent implements OnInit {
   loadMedicamentos(): void {
   this.http.get<any[]>(this.MEDICAMENTO_API).subscribe({
     next: (res) => {
+      this.medicamentosObj = res || [];
       this.medicamentos = (res || []).map(item => item.name || 'Sin nombre');
-      console.log('Medicamentos cargados:', this.medicamentos);
-    },
-    error: (err) => {
-      console.error('Error cargando medicamentos', err);
     }
   });
   }
@@ -44,16 +44,28 @@ export class CrearReservaComponent implements OnInit {
 
 
   goReserve(): void {
-    if (this.medicamento.trim().length === 0) {
-      this.errorNombre = true;
-      return;
-    }
-    this.errorNombre = false;
-
     const payload = {
       NombreMedicamento: this.medicamento.trim(),
       CantidadMedicamento: this.cantidad
     };
+
+    if (this.medicamento.trim().length === 0) {
+      this.errorNombre = true;
+      return;
+    }
+
+    /*this.http.get<boolean>(this.RESERVA_API,  { params: { nombre: this.medicamento, cantidad: String(this.cantidad) } }).subscribe({
+      next: (res) => {
+        this.stock = res || false;
+      }
+    });
+    if(this.stock){
+      this.errorStock = true;
+      return;
+    }*/
+
+    this.errorNombre = false;
+    this.errorStock = false;
 
     this.http.post<any>(this.RESERVA_API, payload).subscribe({
       next: () => {
