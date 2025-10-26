@@ -41,3 +41,9 @@ Feature: Crear Reserva
         And estoy logeado como Usuario Anonimo
         When hago click en el boton "Reservar"
         Then se redirige a la pagina "/crear-reserva"
+    
+    Scenario: Volver a home desde crear reserva
+        Given un usuario que está en la url "/crear-reserva"
+        And estoy logeado como Usuario Anonimo
+        When hago click en boton "Atras"
+        Then se redirige a la pagina "/home"

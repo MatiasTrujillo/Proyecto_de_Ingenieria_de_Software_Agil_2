@@ -76,3 +76,8 @@ Given('un usuario que está en la url {string}', (homeUrl) => {
 Then('se redirige a la pagina {string}', (pagina) => {
     cy.url().should('include', pagina);
 });
+
+//Escenario 7
+When('hago click en boton {string}', (NombreBoton) => {
+    cy.get("[id=botonAtras]").should("have.text", NombreBoton).click();
+});
