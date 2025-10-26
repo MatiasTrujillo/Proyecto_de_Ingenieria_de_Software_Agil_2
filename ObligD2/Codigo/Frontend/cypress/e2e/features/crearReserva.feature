@@ -36,3 +36,8 @@ Feature: Crear Reserva
         And hago click en el boton " Reservar "
         Then se muestra un mensaje de error "Debe ingresar una cantidad"
     
+    Scenario: Ingresar a la pagina de reservar desde home
+        Given un usuario que está en la url "/home"
+        And estoy logeado como Usuario Anonimo
+        When hago click en el boton "Reservar"
+        Then se redirige a la pagina "/crear-reserva"

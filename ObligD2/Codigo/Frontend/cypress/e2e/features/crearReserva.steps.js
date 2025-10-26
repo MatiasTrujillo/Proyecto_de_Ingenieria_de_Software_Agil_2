@@ -66,3 +66,13 @@ When('ingreso el medicamento {string} sin cantidad', (nombreMedicamento) => {
 Then('se muestra un mensaje de error {string}', (mensajeError) => {
     cy.get("[id=errorCantidad]").should("have.text", mensajeError);
 });
+
+
+//Escenario 6
+Given('un usuario que está en la url {string}', (homeUrl) => {
+    cy.visit(homeUrl);
+});
+
+Then('se redirige a la pagina {string}', (pagina) => {
+    cy.url().should('include', pagina);
+});
