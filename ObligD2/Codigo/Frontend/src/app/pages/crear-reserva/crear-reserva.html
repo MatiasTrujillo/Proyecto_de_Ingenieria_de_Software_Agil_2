@@ -34,6 +34,7 @@
                 placeholder="Cantidad"
                 id="cantidadMedicamento"
               />
+              <div *ngIf="errorMenor" id="errorMenor">Debe ingresar una cantidad mayor a 0</div>
               <div *ngIf="errorCantidad" id="errorCantidad">Debe ingresar una cantidad</div>
             </div>
 

@@ -20,6 +20,7 @@ export class CrearReservaComponent implements OnInit {
   medicamentosObj: any[] = [];
   medicamentos: string[] = [];
   errorNombre = false;
+  errorMenor = false;
   errorStock = false;
   errorCantidad = false;
 
@@ -46,6 +47,11 @@ export class CrearReservaComponent implements OnInit {
 
 
   goReserve(): void {
+    this.errorNombre = false;
+    this.errorMenor = false;
+    this.errorStock = false;
+    this.errorCantidad = false;
+    
     const payload = {
       nombreMedicamento: this.medicamento.trim(),
       cantidadMedicamento: this.cantidad,
@@ -56,6 +62,10 @@ export class CrearReservaComponent implements OnInit {
 
     if (this.medicamento.trim().length === 0) {
       this.errorNombre = true;
+      return;
+    }
+    if (this.cantidad <= 0) {
+      this.errorMenor = true;
       return;
     }
     if (!Number.isFinite(this.cantidad)) {
@@ -71,10 +81,6 @@ export class CrearReservaComponent implements OnInit {
           this.errorStock = true;
           return;
         }
-
-        this.errorNombre = false;
-        this.errorStock = false;
-        this.errorCantidad = false;
 
         this.reservaService.createReserva(payload).subscribe({
           next: () => {
