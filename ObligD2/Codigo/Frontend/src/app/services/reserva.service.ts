@@ -69,6 +69,16 @@ export class ReservaService {
       );
   }
 
+  checkStock(nombreMedicamento: string, cantidadMedicamento: number): Observable<boolean> {
+    const url = `${this.url}/check-stock`;
+    const params = { nombre: nombreMedicamento, cantidad: cantidadMedicamento.toString() };
+    return this.http.get<boolean>(url, { headers: this.getHttpHeaders(), params })
+      .pipe(
+        map(response => response),
+        catchError(this.handleError<boolean>('checkStock', false))
+      );
+  }
+
   createReserva(reserva: ReservaRequest): Observable<Reserva> {
     return this.http.post<Reserva>(this.url, reserva, { headers: this.getHttpHeaders() })
       .pipe(

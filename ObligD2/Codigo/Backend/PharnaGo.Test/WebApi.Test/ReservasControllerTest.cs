@@ -56,7 +56,7 @@ namespace PharmaGo.Test.WebApi.Test
             { 
                 NombreMedicamento = "Aspirina", 
                 CantidadMedicamento = 2,
-                FechaExpiracion = DateTime.Now.AddDays(7),
+                FechaExpiracion = DateTime.Now.AddDays(7).ToString(),
                 Usuario = "TestUser"
             };
 
@@ -235,7 +235,7 @@ namespace PharmaGo.Test.WebApi.Test
             { 
                 NombreMedicamento = "Aspirina", 
                 CantidadMedicamento = 2,
-                FechaExpiracion = DateTime.Now.AddDays(7),
+                FechaExpiracion = DateTime.Now.AddDays(7).ToString(),
                 Usuario = "TestUser"
             };
 

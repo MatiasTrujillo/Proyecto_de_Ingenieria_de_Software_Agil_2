@@ -6,6 +6,8 @@ using PharmaGo.WebApi.Enums;
 using PharmaGo.WebApi.Filters;
 using PharmaGo.WebApi.Models.In;
 using PharmaGo.WebApi.Models.Out;
+using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace PharmaGo.WebApi.Controllers
 {
@@ -62,11 +64,11 @@ namespace PharmaGo.WebApi.Controllers
             return Ok(response);
         }
 
-        [HttpGet]
+        [HttpGet("check-stock")]
         public ActionResult<bool> CheckStock([FromQuery] string nombre, [FromQuery] int cantidad)
         {
             bool hayStock = _reservaManager.CheckStock(nombre, cantidad);
             return Ok(hayStock);
         }
-}
+    }
 }
