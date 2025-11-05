@@ -1,0 +1,28 @@
+rules:
+  - id: hardcoded-password
+    patterns:
+      - pattern-regex: (?i)\b(password|passwd|pwd)\b\s*[:=]\s*["'].*["']
+    message: "Possible hardcoded password or credential"
+    languages: [javascript, typescript, python, java, csharp]
+    severity: WARNING
+
+  - id: use-of-eval
+    patterns:
+      - pattern: eval($EXPR)
+      - pattern: new Function($ARGS)
+    message: "Use of eval/new Function can lead to code injection"
+    languages: [javascript, typescript]
+    severity: ERROR
+
+  - id: innerhtml-assignment
+    patterns:
+      - pattern: $EL.innerHTML = $VALUE
+    message: "Assignment to innerHTML can lead to XSS; prefer textContent or proper sanitization"
+    languages: [javascript, typescript]
+    severity: WARNING
+
+  - id: csharp-sql-concat
+    pattern-regex: (?i)"select[^"]*"\s*\+
+    message: "Possible SQL string concatenation (SQL injection risk). Use parameterized queries."
+    languages: [csharp]
+    severity: WARNING
