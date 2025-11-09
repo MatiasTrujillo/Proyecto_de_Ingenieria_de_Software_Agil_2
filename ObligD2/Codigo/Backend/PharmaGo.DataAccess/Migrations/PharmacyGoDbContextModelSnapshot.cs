@@ -223,7 +223,31 @@ namespace PharmaGo.DataAccess.Migrations
                     b.Property<int>("CantidadMedicamento")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Confirmada")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("EmpleadoConfirmacion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("FechaConfirmacion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaExpiracion")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaReserva")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("NombreMedicamento")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("RequierePrescripcion")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("TienePrescripcion")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Usuario")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

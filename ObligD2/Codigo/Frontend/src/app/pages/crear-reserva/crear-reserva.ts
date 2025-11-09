@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
 import { CommonService } from '../../services/CommonService';
+import { ReservaService, Reserva } from '../../services/reserva.service';
 
 
 
@@ -15,15 +16,16 @@ export class CrearReservaComponent implements OnInit {
   medicamento: string = '';
   cantidad: number = 1;
   stock: boolean = false;
-  private RESERVA_API = environment.apiUrl + '/api/Reserva';
   private MEDICAMENTO_API = environment.apiUrl + '/api/Drug';
   medicamentosObj: any[] = [];
   medicamentos: string[] = [];
   errorNombre = false;
+  errorMenor = false;
   errorStock = false;
   errorCantidad = false;
 
   constructor(
+    private reservaService: ReservaService,
     private http: HttpClient,
     private commonService: CommonService,
     private router: Router
@@ -45,13 +47,25 @@ export class CrearReservaComponent implements OnInit {
 
 
   goReserve(): void {
+    this.errorNombre = false;
+    this.errorMenor = false;
+    this.errorStock = false;
+    this.errorCantidad = false;
+    
     const payload = {
-      NombreMedicamento: this.medicamento.trim(),
-      CantidadMedicamento: this.cantidad
+      nombreMedicamento: this.medicamento.trim(),
+      cantidadMedicamento: this.cantidad,
+      fechaExpiracion: (() => { const d = new Date(); d.setDate(d.getDate() + 1); return d.toISOString(); })(),
+      usuario: 'usuario1',
+      requierePrescripcion: false
     };
 
     if (this.medicamento.trim().length === 0) {
       this.errorNombre = true;
+      return;
+    }
+    if (this.cantidad <= 0) {
+      this.errorMenor = true;
       return;
     }
     if (!Number.isFinite(this.cantidad)) {
@@ -59,7 +73,7 @@ export class CrearReservaComponent implements OnInit {
       return;
     }
 
-    this.http.get<boolean>(this.RESERVA_API,  { params: { nombre: this.medicamento, cantidad: this.cantidad } }).subscribe({
+    this.reservaService.checkStock(this.medicamento, this.cantidad).subscribe({
       next: (res) => {
         this.stock = res;
 
@@ -68,11 +82,7 @@ export class CrearReservaComponent implements OnInit {
           return;
         }
 
-        this.errorNombre = false;
-        this.errorStock = false;
-        this.errorCantidad = false;
-
-        this.http.post<any>(this.RESERVA_API, payload).subscribe({
+        this.reservaService.createReserva(payload).subscribe({
           next: () => {
             this.commonService.updateToastData(
               'Reserva creada',

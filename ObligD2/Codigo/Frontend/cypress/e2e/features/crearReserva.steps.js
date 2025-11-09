@@ -34,9 +34,7 @@ Then('se reserva el medicamento', () => {
 
 //Escenario 2
 Then('se muestra un mensaje de error', () => {
-    cy.get('#cantidadMedicamento')
-  .invoke('prop', 'validationMessage')
-  .should('contain', 'mayor o igual');
+    cy.get("[id=errorMenor]").should("have.text", "Debe ingresar una cantidad mayor a 0");
 });
 
 
