@@ -1,0 +1,150 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+  "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+      "id": 1,
+      "options": {"reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}},
+      "targets": [{"expr": "increase(sales_total[30d])", "interval": "", "legendFormat": "Ventas (últimos 30d)"}],
+      "title": "Ventas mensuales (últimos 30d)",
+      "type": "stat"
+    },
+    {
+  "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+      "id": 2,
+      "options": {"reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}},
+      "targets": [{"expr": "increase(reservation_requests_total[30d])", "interval": "", "legendFormat": "Reservas (últimos 30d)"}],
+      "title": "Reservas mensuales (últimos 30d)",
+      "type": "stat",
+      "description": "Usa reservation_requests_total ya exportada por la aplicación. Si tiene otra métrica para ventas, actualizar el panel de Ventas manualmente."
+    },
+    {
+  "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+      "id": 3,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}},
+      "targets": [{"expr": "histogram_quantile(0.95, sum by (le) (rate(reservation_request_duration_seconds_bucket{endpoint=~\"$endpoint\"}[$window])))", "interval": "", "legendFormat": "p95 {{endpoint}}"}],
+      "title": "Tiempo de respuesta de reserva (p95) — ventana $window",
+      "type": "timeseries"
+    },
+    {
+  "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+      "id": 4,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}},
+      "targets": [{"expr": "(increase(reservation_errors_total{endpoint=~\"$endpoint\",status_code=~\"$status\"}[$window]) / increase(reservation_requests_total{endpoint=~\"$endpoint\"}[$window])) * 100", "interval": "", "legendFormat": "Tasa de errores ($status) {{endpoint}}"}],
+      "title": "Tasa de errores (%) — ventana $window",
+      "type": "timeseries"
+    },
+    {
+  "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12},
+      "id": 5,
+      "options": {},
+      "targets": [{"expr": "100 * sum by (endpoint) (rate(reservation_requests_total{status_code=~\"$status\"}[${__auto_interval}])) / sum by (endpoint) (rate(reservation_requests_total[${__auto_interval}]))", "interval": "", "legendFormat": "{{endpoint}}"}],
+      "title": "% Errores por endpoint (ventana dinámica)",
+      "type": "timeseries"
+    },
+    {
+  "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12},
+      "id": 6,
+      "options": {},
+      "targets": [{"expr": "topk(10, sum by (endpoint) (rate(reservation_requests_total{status_code=~\"$status\"}[$window])))", "interval": "", "legendFormat": "{{endpoint}}"}],
+      "title": "Top endpoints con más errores (rps)",
+      "type": "barchart"
+    },
+    {
+  "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 20},
+      "id": 7,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}},
+      "targets": [{"expr": "100 * avg by (container) (rate(container_cpu_usage_seconds_total{container=~\"$container\"}[$window]))", "interval": "", "legendFormat": "{{container}}"}],
+      "title": "Uso de CPU del contenedor (approx. %) — ventana $window",
+      "type": "timeseries"
+    },
+    {
+  "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 20},
+      "id": 8,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}},
+      "targets": [{"expr": "avg_over_time(container_memory_usage_bytes{container=~\"$container\"}[$window]) / 1024 / 1024", "interval": "", "legendFormat": "{{container}}"}],
+      "title": "Uso de memoria del contenedor (MB) — ventana $window",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": ["pharmago", "unified", "metrics"],
+  "templating": {
+    "list": [
+      {
+        "name": "DS_PROMETHEUS",
+        "type": "datasource",
+        "label": "Prometheus datasource",
+        "query": "prometheus",
+        "hide": 0
+      },
+      {
+        "name": "window",
+        "type": "custom",
+        "label": "Ventana",
+        "query": "5m,10m,30m,1h",
+        "current": {"text": "5m", "value": "5m"},
+        "hide": 0
+      },
+      {
+        "name": "endpoint",
+        "type": "query",
+        "label": "Endpoint",
+        "query": "label_values(reservation_requests_total, endpoint)",
+        "datasource": "${DS_PROMETHEUS}",
+        "includeAll": true,
+        "allValue": ".*",
+        "current": {"text": "All", "value": ".*"},
+        "hide": 0
+      },
+      {
+        "name": "status",
+        "type": "custom",
+        "label": "Status codes",
+        "query": "4.. : 4xx,5.. : 5xx,4..|5.. : 4xx+5xx",
+        "current": {"text": "4xx+5xx", "value": "4..|5.."},
+        "hide": 0
+      },
+      {
+        "name": "container",
+        "type": "query",
+        "label": "Contenedor",
+        "query": "label_values(container_memory_usage_bytes, container)",
+        "datasource": "${DS_PROMETHEUS}",
+        "includeAll": true,
+        "allValue": ".*",
+        "current": {"text": "All", "value": ".*"},
+        "hide": 0
+      }
+    ]
+  },
+  "time": {"from": "now-1h", "to": "now"},
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "PharmaGo - Dashboard Unificado",
+  "uid": "pharmago-unified",
+  "version": 1
+}

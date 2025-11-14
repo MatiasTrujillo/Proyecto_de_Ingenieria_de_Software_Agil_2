@@ -41,8 +41,12 @@ services:
     container_name: prometheus
     volumes:
       - ./Backend/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
     ports:
       - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.retention.time=30d'
 
   grafana:
     image: grafana/grafana:latest
@@ -53,6 +57,17 @@ services:
       - "3000:3000"
     depends_on:
       - prometheus
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    container_name: cadvisor
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
 
   pharmago-ui:
     build:
@@ -66,3 +81,4 @@ services:
 
 volumes:
   sql_data:
+  prometheus_data:

@@ -4,6 +4,8 @@ using PharmaGo.Domain.SearchCriterias;
 using PharmaGo.IBusinessLogic;
 using PharmaGo.WebApi.Enums;
 using PharmaGo.WebApi.Filters;
+using PharmaGo.WebApi.Instrumentation;
+using System.Diagnostics;
 using PharmaGo.WebApi.Models.In;
 using PharmaGo.WebApi.Models.Out;
 using System.Linq;
@@ -26,9 +28,44 @@ namespace PharmaGo.WebApi.Controllers
         [HttpPost]
         public IActionResult Create([FromBody] ReservaModel reservaModel)
         {
-            Reserva reservaCreated = _reservaManager.Create(reservaModel.ToEntity());
-            ReservaModelResponse response = new ReservaModelResponse(reservaCreated);
-            return Created(string.Empty, response);
+            var sw = Stopwatch.StartNew();
+            string endpoint = "/api/reserva";
+            string method = "POST";
+            try
+            {
+                // Testing helper: if client sends NombreMedicamento == "FORCE500" we force a server exception
+                if (reservaModel != null && string.Equals(reservaModel.NombreMedicamento, "FORCE500", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new System.Exception("Forced 500 for testing");
+                }
+                Reserva reservaCreated = _reservaManager.Create(reservaModel.ToEntity());
+                ReservaModelResponse response = new ReservaModelResponse(reservaCreated);
+                sw.Stop();
+                double seconds = sw.Elapsed.TotalSeconds;
+                // prometheus-net metrics (local)
+                AppMetrics.ReservationDuration.WithLabels(endpoint, method).Observe(seconds);
+                AppMetrics.ReservationRequestsTotal.WithLabels(endpoint, method, "201").Inc();
+                // OpenTelemetry metrics (exported via OTLP collector)
+                OpenTelemetryMetrics.ReservationDuration.Record(seconds, new System.Collections.Generic.KeyValuePair<string, object>("endpoint", endpoint), new System.Collections.Generic.KeyValuePair<string, object>("method", method));
+                OpenTelemetryMetrics.ReservationRequests.Add(1, new System.Collections.Generic.KeyValuePair<string, object>("endpoint", endpoint), new System.Collections.Generic.KeyValuePair<string, object>("method", method), new System.Collections.Generic.KeyValuePair<string, object>("status_code", "201"));
+                return Created(string.Empty, response);
+            }
+            catch (System.Exception ex)
+            {
+                sw.Stop();
+                double seconds = sw.Elapsed.TotalSeconds;
+                // prometheus-net
+                AppMetrics.ReservationDuration.WithLabels(endpoint, method).Observe(seconds);
+                AppMetrics.ReservationErrorsTotal.WithLabels(endpoint, method, "500", "exception").Inc();
+                // Also count the request with status_code=500 so Prometheus can filter by status
+                AppMetrics.ReservationRequestsTotal.WithLabels(endpoint, method, "500").Inc();
+                // OpenTelemetry
+                OpenTelemetryMetrics.ReservationDuration.Record(seconds, new System.Collections.Generic.KeyValuePair<string, object>("endpoint", endpoint), new System.Collections.Generic.KeyValuePair<string, object>("method", method));
+                OpenTelemetryMetrics.ReservationErrors.Add(1, new System.Collections.Generic.KeyValuePair<string, object>("endpoint", endpoint), new System.Collections.Generic.KeyValuePair<string, object>("method", method), new System.Collections.Generic.KeyValuePair<string, object>("status_code", "500"));
+                // Also record the request counter with status_code=500 for OTLP/collector
+                OpenTelemetryMetrics.ReservationRequests.Add(1, new System.Collections.Generic.KeyValuePair<string, object>("endpoint", endpoint), new System.Collections.Generic.KeyValuePair<string, object>("method", method), new System.Collections.Generic.KeyValuePair<string, object>("status_code", "500"));
+                throw; // let the global ExceptionFilter handle response
+            }
         }
 
         [HttpGet]
