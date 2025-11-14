@@ -1,0 +1,134 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "pharmago-isa2",
+    "title": "PharmaGo ISA2 - Observability",
+    "schemaVersion": 36,
+    "version": 1,
+    "refresh": "10s",
+    "templating": {
+      "list": [
+        {
+          "name": "DS_PROMETHEUS",
+          "type": "datasource",
+          "pluginId": "prometheus",
+          "pluginName": "Prometheus",
+          "current": {
+            "text": "Prometheus",
+            "value": "Prometheus"
+          }
+        },
+        {
+          "name": "window",
+          "type": "custom",
+          "query": "5m,30m,1h",
+          "current": { "text": "5m", "value": "5m" }
+        },
+        {
+          "name": "endpoint",
+          "type": "query",
+          "query": "label_values(reservation_requests_total, endpoint)",
+          "datasource": "${DS_PROMETHEUS}"
+        },
+        {
+          "name": "status",
+          "type": "custom",
+          "query": "^2..$,^4..$,^5..$,^(4..|5..)$",
+          "current": { "text": "^(4..|5..)$", "value": "^(4..|5..)$" }
+        },
+        {
+          "name": "container",
+          "type": "query",
+          "query": "label_values(container_memory_usage_bytes, id)",
+          "datasource": "${DS_PROMETHEUS}"
+        }
+      ]
+    },
+    "panels": [
+      {
+        "type": "timeseries",
+        "title": "CPU % (container)",
+        "id": 1,
+        "targets": [
+          {
+            "expr": "100 * rate(container_cpu_usage_seconds_total{image!~\"|<none>\"}[${window}])",
+            "legendFormat": "{{id}} {{container}}",
+            "datasource": "${DS_PROMETHEUS}"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 0, "w": 12, "h": 8 }
+      },
+      {
+        "type": "timeseries",
+        "title": "Memory (MiB) (container)",
+        "id": 2,
+        "targets": [
+          {
+            "expr": "avg_over_time(container_memory_usage_bytes{image!~\"|<none>\"}[${window}]) / 1024 / 1024",
+            "legendFormat": "{{id}} {{container}}",
+            "datasource": "${DS_PROMETHEUS}"
+          }
+        ],
+        "gridPos": { "x": 12, "y": 0, "w": 12, "h": 8 }
+      },
+      {
+        "type": "timeseries",
+        "title": "Requests per second (reservation)",
+        "id": 3,
+        "targets": [
+          {
+            "expr": "rate(reservation_requests_total{endpoint=~\"$endpoint\"}[$window])",
+            "legendFormat": "{{status_code}}",
+            "datasource": "${DS_PROMETHEUS}"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 8, "w": 12, "h": 6 }
+      },
+      {
+        "type": "timeseries",
+        "title": "Error rate % (reservation)",
+        "id": 4,
+        "targets": [
+          {
+            "expr": "(increase(reservation_errors_total{endpoint=~\"$endpoint\",status_code=~\"$status\"}[$window]) / increase(reservation_requests_total{endpoint=~\"$endpoint\"}[$window])) * 100",
+            "legendFormat": "error_rate",
+            "datasource": "${DS_PROMETHEUS}"
+          }
+        ],
+        "gridPos": { "x": 12, "y": 8, "w": 12, "h": 6 }
+      },
+      {
+        "type": "timeseries",
+        "title": "p95 latency reservation",
+        "id": 5,
+        "targets": [
+          {
+            "expr": "histogram_quantile(0.95, sum by (le) (rate(reservation_request_duration_seconds_bucket{endpoint=~\"$endpoint\"}[$window])))",
+            "legendFormat": "p95",
+            "datasource": "${DS_PROMETHEUS}"
+          }
+        ],
+        "gridPos": { "x": 0, "y": 14, "w": 12, "h": 6 }
+      },
+      {
+        "type": "stat",
+        "title": "Containers monitored",
+        "id": 6,
+        "targets": [
+          { "expr": "count(container_memory_usage_bytes{image!~\"|<none>\"})", "datasource": "${DS_PROMETHEUS}" }
+        ],
+        "gridPos": { "x": 12, "y": 14, "w": 6, "h": 6 }
+      },
+      {
+        "type": "timeseries",
+        "title": "Disk I/O (reads bytes)",
+        "id": 7,
+        "targets": [
+          { "expr": "rate(container_fs_reads_bytes_total{id=~\"$container\"}[$window])", "datasource": "${DS_PROMETHEUS}" }
+        ],
+        "gridPos": { "x": 18, "y": 14, "w": 6, "h": 6 }
+      }
+    ]
+  },
+  "overwrite": true
+}

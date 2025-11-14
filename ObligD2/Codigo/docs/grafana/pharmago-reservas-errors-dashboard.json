@@ -1,0 +1,62 @@
+{
+  "annotations": {"list": []},
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": null,
+  "iteration": 162341234,
+  "links": [],
+  "panels": [
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+      "id": 1,
+      "options": {"legend": {"displayMode": "list", "placement": "bottom"}},
+      "targets": [{"expr": "100 * sum by (endpoint) (rate(reservation_requests_total{status_code=~\"5..\"}[5m])) / sum by (endpoint) (rate(reservation_requests_total[5m]))", "interval": "", "legendFormat": "{{endpoint}}"}],
+      "title": "5xx % por endpoint (5m)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+      "id": 2,
+      "options": {},
+      "targets": [{"expr": "sum by (endpoint) (rate(reservation_requests_total{status_code=~\"5..\"}[5m]))", "interval": "", "legendFormat": "{{endpoint}}"}],
+      "title": "5xx tasa por endpoint (rps)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8},
+      "id": 3,
+      "options": {},
+      "targets": [{"expr": "topk(10, sum by (endpoint) (rate(reservation_requests_total{status_code=~\"5..\"}[5m])))", "interval": "", "legendFormat": "{{endpoint}}"}],
+      "title": "Top endpoints con más 5xx (5m)",
+      "type": "barchart"
+    },
+    {
+      "datasource": "Prometheus",
+      "fieldConfig": {"defaults": {}, "overrides": []},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 8},
+      "id": 4,
+      "options": {},
+      "targets": [{"expr": "sum by (status_code, endpoint) (increase(reservation_requests_total[5m]))", "interval": "", "legendFormat": "{{endpoint}} {{status_code}}"}],
+      "title": "Conteo por status_code y endpoint (5m)",
+      "type": "table"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": ["pharmago", "reservas", "errors"],
+  "templating": {"list": []},
+  "time": {"from": "now-15m", "to": "now"},
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "PharmaGo - Reservas - Errores",
+  "uid": "pharmago-reservas-errors",
+  "version": 1
+}
